@@ -30,8 +30,7 @@ if [[ "$yn" =~ "n" ]]; then FREETUBE=false; else FREETUBE=true;fi
 #done
 
 read -p"Do you wish to install JingOS updates? (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then UPDATES=false;
-else UPDATES=true; fi
+if [[ "$yn" =~ "n" ]]; then UPDATES=false; else UPDATES=true; fi
 
 # Fix OS-release  to be ubuntu for some repos
 sudo sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
@@ -81,16 +80,14 @@ docker(){
     /etc/sudo apt/sources.list.d/docker.list
     debconf-sudo apt-progress -- sudo apt-get install -y -qq --no-install-recommends docker.io
     read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then ;
-    else docker_shortcuts();fi
+    if [[ "$yn" =~ "n" ]]; then; else docker_shortcuts();fi
 }
 
 # Install android
 android(){
     sudo apt install jappmanagerd japm android-compatible-env
     read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then ; 
-    else japm_shortcuts();fi
+    if [[ "$yn" =~ "n" ]]; then; else japm_shortcuts();fi
 }
 
 # Install Sublime Text
