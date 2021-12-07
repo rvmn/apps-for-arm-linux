@@ -1,11 +1,8 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 # check for root privileges
 #
-if [[ $EUID != 0 ]]; then
-    echo "This tool requires root privileges. Try again with \"sudo \" please ..." >&2
-    sleep 2
-    exit 1
-fi
+[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+
 USER=$(ls /home/ |  egrep -io ".*$")
 
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
