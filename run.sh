@@ -4,27 +4,27 @@ echo "Hello, a few questions will be asked first, before installing the tools an
 
     read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then GITADD=false;
-    else GITADD=true;fi
+    else; GITADD=true;fi
 
     read -p "Install Android support (japm) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then ANDROID=false; 
-    else ANDROID=true;fi
+    else; ANDROID=true;fi
 
     read -p "Install Docker (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then DOCKER=false; 
-    else DOCKER=true;fi
+    else; DOCKER=true;fi
 
     read -p "Install Stremio (Streaming app) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then STREMIO=false; 
-    else STREMIO=true;fi
+    else; STREMIO=true;fi
 
     read -p "Install Inkscape (SVG editor) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;
-    else INKSCAPE=true;fi
+    else; INKSCAPE=true;fi
 
     read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then FREETUBE=false;
-    else FREETUBE=true;fi
+    else; FREETUBE=true;fi
 
 # Pi-Apps needs to be remodeled since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
 
@@ -37,7 +37,7 @@ echo "Hello, a few questions will be asked first, before installing the tools an
 
     read -p"Do you wish to install JingOS updates? (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then UPDATES=false;
-    else UPDATES=true; fi
+    else; UPDATES=true; fi
 
 # Fix OS-release  to be ubuntu for some repos
 sudo sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
@@ -88,7 +88,7 @@ docker(){
     debconf-sudo apt-progress -- sudo apt-get install -y -qq --no-install-recommends docker.io
         read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
         if [[ "$yn" =~ "n" ]]; then ;
-        else docker_shortcuts();fi
+        else; docker_shortcuts();fi
 }
 
 # Install android
@@ -96,7 +96,7 @@ android(){
     sudo apt install jappmanagerd japm android-compatible-env
         read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
         if [[ "$yn" =~ "n" ]]; then ; 
-        else japm_shortcuts();fi
+        else; japm_shortcuts();fi
 }
 
 # Install Sublime Text
