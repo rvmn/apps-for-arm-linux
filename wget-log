@@ -1,0 +1,11 @@
+--2021-12-07 20:56:47--  https://raw.githubusercontent.com/rvmn/jingpad-init/main/run.sh
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.109.133, 185.199.111.133, 185.199.108.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.109.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 8973 (8,8K) [text/plain]
+Saving to: ‘/tmp/run.sh’
+
+/tmp/run.sh                                  0%[                                                                                      ]       0  --.-KB/s               /tmp/run.sh                                100%[=====================================================================================>]   8,76K  --.-KB/s    in 0,001s  
+
+2021-12-07 20:56:47 (14,0 MB/s) - ‘/tmp/run.sh’ saved [8973/8973]
+

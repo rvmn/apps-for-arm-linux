@@ -14,5 +14,5 @@ Upgrades (firmware)
 
 ## Run
 ```
-wget -qO- https://raw.githubusercontent.com/rvmn/jingpad-init/main/run.sh | bash
+wget -O /tmp/run.sh https://raw.githubusercontent.com/rvmn/jingpad-init/main/run.sh& sudo chmod +x /tmp/run.sh && /tmp/run.sh && sudo rm /tmp/run.sh
 ```
