@@ -177,5 +177,5 @@ fdhelp() { alias | grep 'alias d' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/nu
 fdalias() { grep -q $1 ~/.bashrc && sed "s/$1.*/$1(){ $2 ; }/" -i ~/.bashrc || sed "$ a\\$1(){ $2 ; }" -i ~/.bashrc; source ~/.bashrc; }
 fralias() { sed -i "s/$1/$2/" ~/.bashrc; source ~/.bashrc; }
 EOT
-
+}
 echo "Finished installing, have fun and see jingpad telegram group for help"
