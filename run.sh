@@ -13,6 +13,11 @@ while true; do
 done
 
 while true; do
+    read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false; exit;   else ULAUNCHER=true;exit;fi
+done
+
+while true; do
     read -p "Install Docker (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then DOCKER=false; exit;   else DOCKER=true;exit;fi
 done
@@ -25,6 +30,16 @@ done
 while true; do
     read -p "Install Inkscape (SVG editor) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then INKSCAPE=false; exit;   else INKSCAPE=true;exit;fi
+done
+
+while true; do
+    read -p "Install Sublime Text (Code editor) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then SUBLIME=false; exit;   else SUBLIME=true;exit;fi
+done
+
+while true; do
+    read -p "Install Visual Studio Code (Code editor) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then VSCODE=false; exit;   else VSCODE=true;exit;fi
 done
 
 while true; do
@@ -55,9 +70,12 @@ sudo sed -i 's|SELINUX=permissive|SELINUX=disabled'  /etc/selinux/config
 if $GITADD ; then gitadd() ; fi
 # Install basic packages
 sudo apt update
-sudo apt git build-essential curl nano  selinux-policy-default ca-certificates  wget -y
+sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget
 if $DOCKER ; then docker() ; fi
 if $STREMIO ; then stremio() ; fi
+if $SUBLIME; then sublimetext() ; fi
+if $VSCODE ; then vscode() ; fi
+if $ULAUNCHER ; then ulauncher() ; fi
 if $INKSCAPE ; then inkscape() ; fi
 if $FREETUBE ; then freetube() ; fi
 if $ANDROID ; then android() ; fi    
@@ -70,6 +88,14 @@ inkscape(){
 
 stremio(){
     wget -qO- https://raw.githubusercontent.com/rvmn/stremio-arm/main/stremio-build.sh | bash
+}
+
+ ulauncher(){
+    sudo apt install -y https://github.com/Ulauncher/Ulauncher/releases/download/5.14.1/ulauncher_5.14.1_all.deb gir1.2-appindicator3-0.1 python3-distutils-extra python3-levenshtein python3-websocket
+ }
+
+vscode(){
+    sudo apt install -y https://aka.ms/linux-arm64-deb
 }
 
 # Add git SSH creds to system
@@ -101,7 +127,7 @@ docker(){
 
 # Install android
 android(){
-    sudo apt install jappmanagerd japm android-compatible-env
+    sudo apt install -y jappmanagerd japm android-compatible-env
     while true; do
         read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
         if [[ "$yn" =~ "n" ]]; then exit;  else japm_shortcuts();exit;fi
@@ -110,7 +136,7 @@ android(){
 
 # Install Sublime Text
 sublimetext(){
-    sudo apt install snapd
+    sudo apt install -y snapd
     sudo systemctl enable snapd.service
     sudo systemctl start snapd.service
     sudo snap install sublime-text --classic
