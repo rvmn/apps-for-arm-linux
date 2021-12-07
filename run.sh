@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 # check for root privileges
 #
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
