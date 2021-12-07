@@ -2,64 +2,42 @@
 
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
 
-while true; do
-    read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then GITADD=false; exit;   else GITADD=true;exit;fi
-done
+read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then GITADD=false;    else GITADD=true;fi
 
-while true; do
-    read -p "Install Android support (japm) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then ANDROID=false; exit;   else ANDROID=true;exit;fi
-done
+read -p "Install Android support (japm) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;fi
 
-while true; do
-    read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false; exit;   else ULAUNCHER=true;exit;fi
-done
+read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true;fi
 
-while true; do
-    read -p "Install Docker (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then DOCKER=false; exit;   else DOCKER=true;exit;fi
-done
+read -p "Install Docker (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;fi
 
-while true; do
-    read -p "Install Stremio (Streaming app) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then STREMIO=false; exit;   else STREMIO=true;exit;fi
-done
+read -p "Install Stremio (Streaming app) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then STREMIO=false;    else STREMIO=true;fi
 
-while true; do
-    read -p "Install Inkscape (SVG editor) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then INKSCAPE=false; exit;   else INKSCAPE=true;exit;fi
-done
+read -p "Install Inkscape (SVG editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;    else INKSCAPE=true;fi
 
-while true; do
-    read -p "Install Sublime Text (Code editor) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then SUBLIME=false; exit;   else SUBLIME=true;exit;fi
-done
+read -p "Install Sublime Text (Code editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then SUBLIME=false;    else SUBLIME=true;fi
 
-while true; do
-    read -p "Install Visual Studio Code (Code editor) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then VSCODE=false; exit;   else VSCODE=true;exit;fi
-done
+read -p "Install Visual Studio Code (Code editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then VSCODE=false;    else VSCODE=true;fi
 
-while true; do
-    read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then FREETUBE=false; exit;   else FREETUBE=true;exit;fi
-done
+read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then FREETUBE=false;    else FREETUBE=true;fi
 
 # Pi-Apps needs to be remodeled since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
 
-#while true; do
-#   read -p "Install Pi-Apps (app installer) (Y/n)? " yn
+##   read -p "Install Pi-Apps (app installer) (Y/n)? " yn
 #    if [[ "$yn" =~ "Y" ]]; then make install; fi
 #   if [[ "$yn" =~ "n" ]]; then ; fi
 #  echo "Answer Y/n."
-#done
-
-while true; do
-    read -p"Do you wish to install JingOS updates? (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then UPDATES=false; exit;   else UPDATES=true; exit;fi
-done
+#
+read -p"Do you wish to install JingOS updates? (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
 # Fix OS-release  to be ubuntu for some repos
 sudo sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
@@ -119,19 +97,15 @@ docker(){
     echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu focal stable" > \
     /etc/sudo apt/sources.list.d/docker.list
     debconf-sudo apt-progress -- sudo apt-get install -y -qq --no-install-recommends docker.io
-    while true; do
-        read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
-        if [[ "$yn" =~ "n" ]]; then exit; else docker_shortcuts();exit;fi
-   done
+    read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then  else docker_shortcuts();fi
 }
 
 # Install android
 android(){
     sudo apt install -y jappmanagerd japm android-compatible-env
-    while true; do
-        read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
-        if [[ "$yn" =~ "n" ]]; then exit;  else japm_shortcuts();exit;fi
-   done
+    read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then   else japm_shortcuts();fi
 }
 
 # Install Sublime Text
