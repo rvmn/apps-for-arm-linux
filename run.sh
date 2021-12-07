@@ -1,16 +1,6 @@
 #!/usr/bin/bash
-# check for root privileges
-#
-[ "$UID" -eq 0 ] || exec sudo "$@"
 
-USER=$(ls /home/ |  egrep -io ".*$")
-
-echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
-while true; do
-    read -p "Is your regular user named: $USER  (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $noexpr ]]; then read -p "Give the name of user to install user-defined stuff on:  " USER;exit; fi
-    echo "Answer ${yesword} / ${noword}."
-done
+sudo echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
 
 GITADD=false
 DOCKER=false
@@ -83,15 +73,15 @@ select yn in "Yes" "No"; do
 done
 
 # Fix OS-release  to be ubuntu for some repos
-sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
+sudo sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
 
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
-sed -i 's|SELINUX=permissive|SELINUX=disabled'  /etc/selinux/config
+sudo sed -i 's|SELINUX=permissive|SELINUX=disabled'  /etc/selinux/config
 
 if $GITADD ; then gitadd() ; fi
 # Install basic packages
-apt update
-apt git build-essential curl nano  selinux-policy-default ca-certificates 
+sudo apt update
+sudo apt git build-essential curl nano  selinux-policy-default ca-certificates 
 if $DOCKER ; then docker() ; fi
 if $STREMIO ; then stremio() ; fi
 if $INKSCAPE ; then inkscape() ; fi
@@ -100,8 +90,8 @@ if $ANDROID ; then android() ; fi
 if $UPDATES ; then updates() ; fi    
 
 inkscape(){
-    apt update
-    apt install -y inkscape
+    sudo apt update
+    sudo apt install -y inkscape
 }
 
 stremio(){
@@ -112,7 +102,11 @@ stremio(){
 gitadd(){
     FILE="/home/$USER/.ssh/known_hosts"
     if [ -f "$FILE" ]; then rm $FILE; fi
-    su - $USER -c 'read -p "Enter your email address:" EMAIL && ssh-keygen -t ed25519 -C $EMAIL &&  eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519 && cat ~/.ssh/id_ed25519.pub'
+    read -p "Enter your email address:" EMAIL 
+    ssh-keygen -t ed25519 -C $EMAIL
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_ed25519
+    cat ~/.ssh/id_ed25519.pub
     read -p "Installed the SSH creds, copy the previous line fully and paste in the browser, click enter to open the browser"
     /usr/bin/chromium-browser-stable --new-window https://github.com/settings/keys
     echo "Remember to use the SSH URL (git@github.com/username/repo.git)"
@@ -120,47 +114,45 @@ gitadd(){
 
 # Install Docker
 docker(){
-    curl -fsSL "https://download.docker.com/linux/debian/gpg" | apt-key add -qq - > /dev/null 2>&1
-    debconf-apt-progress -- apt-get update
+    curl -fsSL "https://download.docker.com/linux/debian/gpg" | sudo apt-key add -qq - > /dev/null 2>&1
+    debconf-sudo apt-progress -- sudo apt-get update
     echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu focal stable" > \
-    /etc/apt/sources.list.d/docker.list
-    debconf-apt-progress -- apt-get install -y -qq --no-install-recommends docker.io
+    /etc/sudo apt/sources.list.d/docker.list
+    debconf-sudo apt-progress -- sudo apt-get install -y -qq --no-install-recommends docker.io
     while true; do
         read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (${yesword} / ${noword})? " yn
         if [[ "$yn" =~ $yesexpr ]]; then docker_shortcuts(); exit; fi
         if [[ "$yn" =~ $noexpr ]]; then exit; fi
-        echo "Answer ${yesword} / ${noword}."
-    done
+   done
 }
 
 # Install android
 android(){
-    apt install jappmanagerd japm android-compatible-env
+    sudo apt install jappmanagerd japm android-compatible-env
     while true; do
         read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (${yesword} / ${noword})? " yn
         if [[ "$yn" =~ $yesexpr ]]; then japm_shortcuts(); exit; fi
         if [[ "$yn" =~ $noexpr ]]; then exit; fi
-        echo "Answer ${yesword} / ${noword}."
-    done
+   done
 }
 
 # Install Sublime Text
 sublimetext(){
-    apt install snapd
-    systemctl enable snapd.service
-    systemctl start snapd.service
-    snap install sublime-text --classic
+    sudo apt install snapd
+    sudo systemctl enable snapd.service
+    sudo systemctl start snapd.service
+    sudo snap install sublime-text --classic
 }
 
 
 # Install Freetube
 freetube(){
-    dpkg -i $(curl -w "%{filename_effective}" -LO https://apt.raspbian-addons.org/debian/pool/main/f/freetube/$(curl -s https://apt.raspbian-addons.org/debian/pool/main/f/freetube/ | egrep -io "freetube_.*_arm64.deb" | head -n 1 )) && rm freetube_*.deb
+    sudo dpkg -i $(curl -w "%{filename_effective}" -LO https://sudo apt.raspbian-addons.org/debian/pool/main/f/freetube/$(curl -s https://sudo apt.raspbian-addons.org/debian/pool/main/f/freetube/ | egrep -io "freetube_.*_arm64.deb" | head -n 1 )) && rm freetube_*.deb
 }
 
 # Update system
 updates(){
-    apt update && apt upgrade
+    sudo apt update && sudo apt upgrade
 }
 
 japm_shortcuts{
