@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-sudo echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
+echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
 
 GITADD=false
 DOCKER=false
@@ -64,12 +64,11 @@ done
 #  echo "Answer ${yesword} / ${noword}."
 #done
 
-echo "Do you wish to install all JingOS updates?"
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) UPDATES=true; break;;
-        No ) exit;;
-    esac
+while true; do
+    read -p"Do you wish to install JingOS updates? (${yesword} / ${noword})? " yn
+    if [[ "$yn" =~ $yesexpr ]]; then UPDATES=true; exit; fi
+    if [[ "$yn" =~ $noexpr ]]; then exit; fi
+    echo "Answer ${yesword} / ${noword}."
 done
 
 # Fix OS-release  to be ubuntu for some repos
