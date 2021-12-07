@@ -4,7 +4,7 @@ echo "Hello, a few questions will be asked first, before installing the tools an
 
     read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then GITADD=false;
-    else GITADD=true;fi
+else GITADD=true;fi
 
     read -p "Install Android support (japm) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then ANDROID=false; 
