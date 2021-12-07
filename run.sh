@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 # check for root privileges
 #
-[ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
+[ "$UID" -eq 0 ] || exec sudo bash "$@"
 
 USER=$(ls /home/ |  egrep -io ".*$")
 
