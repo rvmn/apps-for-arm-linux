@@ -14,6 +14,9 @@ if [[ "$yn" =~ "n" ]]; then DOCKER=false;  else DOCKER=true;fi
 read -p "Install Stremio (Streaming app) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then STREMIO=false; else STREMIO=true;fi
 
+read -p "Install Sublime Text (Code editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then SUBLIME=false; else STREMIO=true;fi
+
 read -p "Install Inkscape (SVG editor) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then INKSCAPE=false; else INKSCAPE=true;fi
 
@@ -44,6 +47,7 @@ sudo apt update
 sudo apt git build-essential curl nano  selinux-policy-default ca-certificates  wget -y
 if $DOCKER ; then docker() ; fi
 if $STREMIO ; then stremio() ; fi
+if $SUBLIME ; then sublimetext() ; fi
 if $INKSCAPE ; then inkscape() ; fi
 if $FREETUBE ; then freetube() ; fi
 if $ANDROID ; then android() ; fi    
