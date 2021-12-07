@@ -1,5 +1,5 @@
 # jingpad-init
-Script that fixes some problems in JingOS-arm and installs some useful stuff
+Script for a JingPad A1 tablet (running JingOS-arm) that installs usefull apps and adds some system fixes
 
 ## Run
 ```
