@@ -1,74 +1,56 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
 
-GITADD=false
-DOCKER=false
-STREMIO=false
-INKSCAPE=false
-FREETUBE=false
-UPDATES=false
-
-# set local yes and no words
-set -- $(locale LC_MESSAGES)
-yesptrn="$1"; noptrn="$2"; yesword="$3"; noword="$4"
-
 while true; do
-    read -p "Install git SSH-keypair for connecting your git account (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $yesexpr ]]; then GITADD=true; exit; fi
-    if [[ "$yn" =~ $noexpr ]]; then exit; fi
-    echo "Answer ${yesword} / ${noword}."
+    read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then GITADD=false;
+    else GITADD=true;fi
 done
 
 while true; do
-    read -p "Install Android support (japm) (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $yesexpr ]]; then ANDROID=true; exit; fi
-    if [[ "$yn" =~ $noexpr ]]; then exit; fi
-    echo "Answer ${yesword} / ${noword}."
+    read -p "Install Android support (japm) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then ANDROID=false; 
+    else ANDROID=true;fi
 done
 
 while true; do
-    read -p "Install Docker (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $yesexpr ]]; then DOCKER=true; exit; fi
-    if [[ "$yn" =~ $noexpr ]]; then exit; fi
-    echo "Answer ${yesword} / ${noword}."
+    read -p "Install Docker (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then DOCKER=false; 
+    else DOCKER=true;fi
 done
 
 while true; do
-    read -p "Install Stremio (Streaming app) (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $yesexpr ]]; then STREMIO=true; exit; fi
-    if [[ "$yn" =~ $noexpr ]]; then exit; fi
-    echo "Answer ${yesword} / ${noword}."
+    read -p "Install Stremio (Streaming app) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then STREMIO=false; 
+    else STREMIO=true;fi
 done
 
 while true; do
-    read -p "Install Inkscape (SVG editor) (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $yesexpr ]]; then INKSCAPE=true; exit; fi
-    if [[ "$yn" =~ $noexpr ]]; then exit; fi
-    echo "Answer ${yesword} / ${noword}."
+    read -p "Install Inkscape (SVG editor) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;
+    else INKSCAPE=true;fi
 done
 
 while true; do
-    read -p "Install Freetube (Ad-free YouTube streamer) (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $yesexpr ]]; then FREETUBE=true; exit; fi
-    if [[ "$yn" =~ $noexpr ]]; then exit; fi
-    echo "Answer ${yesword} / ${noword}."
+    read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then FREETUBE=false;
+    else FREETUBE=true;fi
 done
 
 # Pi-Apps needs to be remodeled since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
 
 #while true; do
-#   read -p "Install Pi-Apps (app installer) (${yesword} / ${noword})? " yn
-#    if [[ "$yn" =~ $yesexpr ]]; then make install; exit; fi
-#   if [[ "$yn" =~ $noexpr ]]; then exit; fi
-#  echo "Answer ${yesword} / ${noword}."
+#   read -p "Install Pi-Apps (app installer) (Y/n)? " yn
+#    if [[ "$yn" =~ "Y" ]]; then make install; fi
+#   if [[ "$yn" =~ "n" ]]; then ; fi
+#  echo "Answer Y/n."
 #done
 
 while true; do
-    read -p"Do you wish to install JingOS updates? (${yesword} / ${noword})? " yn
-    if [[ "$yn" =~ $yesexpr ]]; then UPDATES=true; exit; fi
-    if [[ "$yn" =~ $noexpr ]]; then exit; fi
-    echo "Answer ${yesword} / ${noword}."
+    read -p"Do you wish to install JingOS updates? (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then UPDATES=false;
+    else UPDATES=true; fi
 done
 
 # Fix OS-release  to be ubuntu for some repos
@@ -80,7 +62,7 @@ sudo sed -i 's|SELINUX=permissive|SELINUX=disabled'  /etc/selinux/config
 if $GITADD ; then gitadd() ; fi
 # Install basic packages
 sudo apt update
-sudo apt git build-essential curl nano  selinux-policy-default ca-certificates 
+sudo apt git build-essential curl nano  selinux-policy-default ca-certificates  wget -y
 if $DOCKER ; then docker() ; fi
 if $STREMIO ; then stremio() ; fi
 if $INKSCAPE ; then inkscape() ; fi
@@ -119,9 +101,9 @@ docker(){
     /etc/sudo apt/sources.list.d/docker.list
     debconf-sudo apt-progress -- sudo apt-get install -y -qq --no-install-recommends docker.io
     while true; do
-        read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (${yesword} / ${noword})? " yn
-        if [[ "$yn" =~ $yesexpr ]]; then docker_shortcuts(); exit; fi
-        if [[ "$yn" =~ $noexpr ]]; then exit; fi
+        read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
+        if [[ "$yn" =~ "n" ]]; then ;
+        else docker_shortcuts();fi
    done
 }
 
@@ -129,9 +111,9 @@ docker(){
 android(){
     sudo apt install jappmanagerd japm android-compatible-env
     while true; do
-        read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (${yesword} / ${noword})? " yn
-        if [[ "$yn" =~ $yesexpr ]]; then japm_shortcuts(); exit; fi
-        if [[ "$yn" =~ $noexpr ]]; then exit; fi
+        read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
+        if [[ "$yn" =~ "n" ]]; then ; 
+        else japm_shortcuts();fi
    done
 }
 
