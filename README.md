@@ -9,8 +9,11 @@ VSCode
 Ulauncher
 Freetube
 Inkscape
+Boxy-SVG
 Android support (japm)
 Upgrades (firmware)
+Bash Aliases (quick type)
+ZSH
 
 ## Run
 ```

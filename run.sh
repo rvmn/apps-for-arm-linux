@@ -20,6 +20,9 @@ if [[ "$yn" =~ "n" ]]; then STREMIO=false;    else STREMIO=true;fi
 read -p "Install Inkscape (SVG editor) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;    else INKSCAPE=true;fi
 
+read -p "Install Boxy-SVG (SVG editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then BOXYSVG=false;    else BOXYSVG=true;fi
+
 read -p "Install Sublime Text (Code editor) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then SUBLIME=false;    else SUBLIME=true;fi
 
@@ -39,16 +42,17 @@ if [[ "$yn" =~ "n" ]]; then FREETUBE=false;    else FREETUBE=true;fi
 read -p"Do you wish to install JingOS updates? (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
+if $GITADD ; then gitadd() ; fi
+# Install basic packages
+sudo apt update
+sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget at-spi2-core
+
 # Fix OS-release  to be ubuntu for some repos
 sudo sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
 
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
 sudo sed -i 's|SELINUX=permissive|SELINUX=disabled'  /etc/selinux/config
 
-if $GITADD ; then gitadd() ; fi
-# Install basic packages
-sudo apt update
-sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget
 if $DOCKER ; then docker() ; fi
 if $STREMIO ; then stremio() ; fi
 if $SUBLIME; then sublimetext() ; fi
@@ -56,6 +60,7 @@ if $VSCODE ; then vscode() ; fi
 if $ULAUNCHER ; then ulauncher() ; fi
 if $INKSCAPE ; then inkscape() ; fi
 if $FREETUBE ; then freetube() ; fi
+if $BOXYSVG ; then boxysvg() ; fi
 if $ANDROID ; then android() ; fi    
 if $UPDATES ; then updates() ; fi    
 
@@ -74,6 +79,10 @@ stremio(){
 
 vscode(){
     sudo apt install -y https://aka.ms/linux-arm64-deb
+}
+
+boxysvg(){
+    wget -qO- https://raw.githubusercontent.com/Botspot/Boxy-SVG-RPi/main/install.sh | bash
 }
 
 # Add git SSH creds to system
@@ -130,11 +139,23 @@ updates(){
 japm_shortcuts{
     tee -a ~/.bashrc>>/dev/null <<EOT
 # japm aliases
-alias ai='echo "install package">/dev/null;sudo japm install -i'
-alias au='echo "uninstall package">/dev/null;sudo japm uninstall'
-alias al='echo "list all packages installed">/dev/null;japm list -a'
-alias ahelp='echo "show help (this)">/dev/null;fahelp'
+alias ai='echo "install package">/dev/null;sudo apt install -y'
+alias au='echo "uninstall package">/dev/null;sudo apt remove'
+alias al='echo "list all packages installed">/dev/null;sudo apt list --installed'
+alias av='echo "list all versions of a package (regexable)">/dev/null;sudo apt-show-versions -a -r'
+alias ahelp='echo "show help (this)">/dev/null;fjhelp'
 fahelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
+EOT
+}
+
+japm_shortcuts{
+    tee -a ~/.bashrc>>/dev/null <<EOT
+# japm aliases
+alias ji='echo "install package">/dev/null;sudo japm install -i'
+alias ju='echo "uninstall package">/dev/null;sudo japm uninstall'
+alias jl='echo "list all packages installed">/dev/null;japm list -a'
+alias jhelp='echo "show help (this)">/dev/null;fjhelp'
+fjhelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
 EOT
 }
 
