@@ -13,7 +13,10 @@ Boxy-SVG
 Android support (japm)
 Upgrades (firmware)
 Bash Aliases (quick type)
+Docker aliases
+Japm aliases
 ZSH
+NodeJS
 
 ## Run
 ```

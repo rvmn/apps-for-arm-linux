@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
-
+RCFILE="~/.bashrc"
 if [[ -f ~/.zshrc ]];  then 
     read -p "You have ZSH installed, revert back to BASH (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then echo "leaving ZSH installed"; else
@@ -54,6 +54,9 @@ if [[ "$yn" =~ "n" ]]; then ZSH=false;    else ZSH=true;fi
 read -p "Install Apt aliases (apt manager aliases, see ahelp)  (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then ZSH=false;    else ZSH=true;fi
 
+read -p "Install NVM and NodeJS (JS V8 framework)  (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then NVM=false;    else NVM=true;fi
+
 # Pi-Apps needs to be reworked since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
 
 ##   read -p "Install Pi-Apps (app installer) (Y/n)? " yn
@@ -75,10 +78,12 @@ sudo apt update
 sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget at-spi2-core
 
 # Fix OS-release  to be ubuntu for some repos
-sudo sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
+#sudo sed -i 's|ID=jingos|ID=ubuntu' /etc/os-release
 
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
 sudo sed -i 's|SELINUX=permissive|SELINUX=disabled'  /etc/selinux/config
+
+if [[ -f ~/.zshrc ]];  then RCFILE="~/.zshrc"; fi
 
 if $DOCKER ; then docker() ; fi
 if $STREMIO ; then stremio() ; fi
@@ -90,7 +95,43 @@ if $FREETUBE ; then freetube() ; fi
 if $BOXYSVG ; then boxysvg() ; fi
 if $ANDROID ; then android() ; fi 
 if $ZSH ; then zsh() ; fi  
+if $NVM; then nvm() ; fi  
 if $UPDATES ; then updates() ; fi    
+
+nvm(){
+    #Install nvm manager:
+    export NVM_DIR="$HOME/.nvm"
+    mkdir -p "$NVM_DIR"
+    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash || error "Failed to install nvm!"
+    source "${DIRECTORY}/api"
+    if [ "$arch" == 32 ];then
+      #armhf, so patch nvm script to forcibly use armhf
+      sed -i 's/^  nvm_echo "${NVM_ARCH}"/  NVM_ARCH=armv7l ; nvm_echo "${NVM_ARCH}"/g' "$NVM_DIR/nvm.sh"
+    fi
+
+    #remove original nvm stuff from bashrc
+    sed -i '/NVM_DIR/d' ~/.bashrc
+    echo 'if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(type -t __init_nvm)" = function ]; then
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+      declare -a __node_commands=("nvm" "node" "npm" "yarn" "gulp" "grunt" "webpack")
+      function __init_nvm() {
+        for i in "${__node_commands[@]}"; do unalias $i; done
+        . "$NVM_DIR"/nvm.sh
+        unset __node_commands
+        unset -f __init_nvm
+      }
+      for i in "${__node_commands[@]}"; do alias $i="__init_nvm && "$i; done
+    fi' > ~/.node_bashrc
+    echo ". ~/.node_bashrc" >> $RCFILE
+
+    # One time use, since `source ~/.bashrc` not working
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+    # Install latest nodejs
+    nvm install node || error "Failed to install node.js with nvm!"
+}
 
 inkscape(){
     sudo apt update
@@ -170,7 +211,7 @@ updates(){
 }
 
 apt_shortcuts{
-    tee -a ~/.bashrc>>/dev/null <<EOT
+    tee -a $RCFILE>>/dev/null <<EOT
 # apt aliases
 alias ai='echo "install package">/dev/null;sudo apt install -y'
 alias au='echo "uninstall package">/dev/null;sudo apt remove'
@@ -182,7 +223,7 @@ EOT
 }
 
 japm_shortcuts{
-    tee -a ~/.bashrc>>/dev/null <<EOT
+    tee -a $RCFILE>>/dev/null <<EOT
 # japm aliases
 alias ji='echo "install package">/dev/null;sudo japm install -i'
 alias ju='echo "uninstall package">/dev/null;sudo japm uninstall'
@@ -193,7 +234,7 @@ EOT
 }
 
 docker_shortcuts{
-    tee -a ~/.bashrc>>/dev/null <<EOT
+    tee -a $RCFILE>>/dev/null <<EOT
 # docker aliases
 alias dq='echo "search docker ecosystem">/dev/null;docker search'
 alias dl='echo "get latest container ID">/dev/null;docker ps -l -q'
@@ -248,4 +289,4 @@ fralias() { sed -i "s/$1/$2/" ~/.bashrc; source ~/.bashrc; }
 EOT
 }
 echo "Finished installing, have fun and see jingpad telegram group for help"
-if $ZSH;then cat ~/.bashrc >> ~/.zshrc && echo "\nYour default shell was switched to: \Z1ZSH\Z0\n\nPlease reboot";fi
+if $ZSH;then echo "\nYour default shell was switched to: \Z1ZSH\Z0\n\nPlease reboot";fi
