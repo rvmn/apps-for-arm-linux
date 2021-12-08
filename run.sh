@@ -32,7 +32,13 @@ if [[ "$yn" =~ "n" ]]; then VSCODE=false;    else VSCODE=true;fi
 read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then FREETUBE=false;    else FREETUBE=true;fi
 
-# Pi-Apps needs to be remodeled since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
+read -p "Install ZSH (Advanced shell)  (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then ZSH=false;    else ZSH=true;fi
+
+read -p "Install Apt aliases (apt manager aliases, see ahelp)  (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then ZSH=false;    else ZSH=true;fi
+
+# Pi-Apps needs to be reworked since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
 
 ##   read -p "Install Pi-Apps (app installer) (Y/n)? " yn
 #    if [[ "$yn" =~ "Y" ]]; then make install; fi
@@ -43,6 +49,11 @@ read -p"Do you wish to install JingOS updates? (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
 if $GITADD ; then gitadd() ; fi
+
+# Add armbian repo
+echo "deb [arch=arm64] http://apt.armbian.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/armbian.list
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
+
 # Install basic packages
 sudo apt update
 sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget at-spi2-core
@@ -61,7 +72,8 @@ if $ULAUNCHER ; then ulauncher() ; fi
 if $INKSCAPE ; then inkscape() ; fi
 if $FREETUBE ; then freetube() ; fi
 if $BOXYSVG ; then boxysvg() ; fi
-if $ANDROID ; then android() ; fi    
+if $ANDROID ; then android() ; fi 
+if $ZSH ; then zsh() ; fi  
 if $UPDATES ; then updates() ; fi    
 
 inkscape(){
@@ -85,6 +97,11 @@ boxysvg(){
     wget -qO- https://raw.githubusercontent.com/Botspot/Boxy-SVG-RPi/main/install.sh | bash
 }
 
+zsh(){
+    sudo apt-get install -y armbian-zsh
+    sudo awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534 || $3 == 0) print $1}' /etc/passwd | xargs -L1 chsh -s $(grep /zsh$ /etc/shells | tail -1)
+}
+
 # Add git SSH creds to system
 gitadd(){
     FILE="/home/$USER/.ssh/known_hosts"
@@ -106,14 +123,14 @@ docker(){
     echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu focal stable" > \
     /etc/sudo apt/sources.list.d/docker.list
     debconf-sudo apt-progress -- sudo apt-get install -y -qq --no-install-recommends docker.io
-    read -p "Install Docker shortcuts (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
+    read -p "Install Docker aliases (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then  else docker_shortcuts();fi
 }
 
 # Install android
 android(){
     sudo apt install -y jappmanagerd japm android-compatible-env
-    read -p "Install japm shortcuts (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
+    read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then   else japm_shortcuts();fi
 }
 
@@ -136,14 +153,14 @@ updates(){
     sudo apt update && sudo apt upgrade
 }
 
-japm_shortcuts{
+apt_shortcuts{
     tee -a ~/.bashrc>>/dev/null <<EOT
-# japm aliases
+# apt aliases
 alias ai='echo "install package">/dev/null;sudo apt install -y'
 alias au='echo "uninstall package">/dev/null;sudo apt remove'
 alias al='echo "list all packages installed">/dev/null;sudo apt list --installed'
 alias av='echo "list all versions of a package (regexable)">/dev/null;sudo apt-show-versions -a -r'
-alias ahelp='echo "show help (this)">/dev/null;fjhelp'
+alias ahelp='echo "show help (this)">/dev/null;fahelp'
 fahelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
 EOT
 }
@@ -215,3 +232,4 @@ fralias() { sed -i "s/$1/$2/" ~/.bashrc; source ~/.bashrc; }
 EOT
 }
 echo "Finished installing, have fun and see jingpad telegram group for help"
+if $ZSH;then cat ~/.bashrc >> ~/.zshrc && echo "\nYour default shell was switched to: \Z1ZSH\Z0\n\nPlease reboot";fi
