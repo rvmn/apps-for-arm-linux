@@ -2,6 +2,22 @@
 
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
 
+if [[ -f ~/.zshrc ]];  then 
+    read -p "You have ZSH installed, revert back to BASH (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then echo "leaving ZSH installed"; else
+        sudo apt-get purge -y armbian-zsh
+        BASHLOCATION=$(grep /bash$ /etc/shells | tail -1)
+        # change shell back to bash for future users
+        sudo sed -i "s|^SHELL=.*|SHELL=${BASHLOCATION}|" /etc/default/useradd
+        sudo sed -i "s|^DSHELL=.*|DSHELL=${BASHLOCATION}|" /etc/adduser.conf
+        # change to BASH shell for root and all normal users
+        sudo awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534 || $3 == 0) print $1}' /etc/passwd | xargs -L1 chsh -s $(grep /bash$ /etc/shells | tail -1)
+        rm ~/.zshrc
+        echo "\nYour default shell was switched to: \Z1BASH\Z0\n\nPlease reboot." 
+        read -p "Would you like to quit this app now? (Y/n)" yn
+        if [[ "$yn" =~ "n" ]]; then echo "continuing app"; else exit;fi
+    fi
+fi
 read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then GITADD=false;    else GITADD=true;fi
 
