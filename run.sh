@@ -21,8 +21,10 @@ fi
 read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then GITADD=false;    else GITADD=true;fi
 
-read -p "Install Android support (japm) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;fi
+if [[ $(uname -n) =~ "JingOS" ]]; then
+ read -p "Install Android support (japm) (Y/n)? " yn
+ if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;fi
+fi
 
 read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true;fi
@@ -48,14 +50,15 @@ if [[ "$yn" =~ "n" ]]; then VSCODE=false;    else VSCODE=true;fi
 read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then FREETUBE=false;    else FREETUBE=true;fi
 
+read -p "Install NVM and NodeJS (JS V8 framework)  (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then NVM=false;    else NVM=true;fi
+
 read -p "Install ZSH (Advanced shell)  (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then ZSH=false;    else ZSH=true;fi
 
 read -p "Install Apt aliases (apt manager aliases, see ahelp)  (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then ALIASES=false;    else ALIASES=true;fi
 
-read -p "Install NVM and NodeJS (JS V8 framework)  (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then NVM=false;    else NVM=true;fi
 
 # Pi-Apps needs to be reworked since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
 
