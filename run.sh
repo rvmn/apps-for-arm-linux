@@ -23,14 +23,20 @@ if [[ "$yn" =~ "n" ]]; then GITADD=false;    else GITADD=true;fi
 
 if [[ $(uname -n) =~ "JingOS" ]]; then
  read -p "Install Android support (japm) (Y/n)? " yn
- if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;fi
+ if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;
+  read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
+  if [[ "$yn" =~ "n" ]]; then echo '';  else japm_shortcuts;fi
+ fi
 fi
 
 read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true;fi
 
 read -p "Install Docker (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;fi
+if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;
+ read -p "Install Docker aliases (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
+ if [[ "$yn" =~ "n" ]]; then echo '';  else docker_shortcuts;fi
+fi
 
 read -p "Install Stremio (Streaming app) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then STREMIO=false;    else STREMIO=true;fi
@@ -249,19 +255,15 @@ gitadd(){
 # Install Docker
 docker(){
     curl -fsSL "https://download.docker.com/linux/debian/gpg" | sudo apt-key add -qq - > /dev/null 2>&1
-    debconf-sudo apt-progress -- sudo apt-get update
+    sudo apt-get update
     echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu focal stable" > \
     /etc/sudo apt/sources.list.d/docker.list
-    debconf-sudo apt-progress -- sudo apt-get install -y -qq --no-install-recommends docker.io
-    read -p "Install Docker aliases (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then echo '';  else docker_shortcuts;fi
-}
+    sudo apt-get install -y -qq --no-install-recommends docker.io
+ }
 
 # Install android
 android(){
     sudo apt install -y jappmanagerd japm android-compatible-env
-    read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then echo '';  else japm_shortcuts;fi
 }
 
 # Install Sublime Text
