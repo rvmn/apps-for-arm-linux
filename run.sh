@@ -68,7 +68,7 @@ read -p"Do you wish to install JingOS updates? (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
 # Fix OS-release  to be ubuntu for some repos
-sudo sed -i '' 's/ID=jingos/ID=ubuntu/' /etc/os-release
+sudo sed -i 's/ID=jingos/ID=ubuntu/' /etc/os-release
 
 # Fix auth for xserver to allow sudo running gui apps from cli like 'sudo gedit file.txt'
 xhost + localhost
@@ -81,10 +81,8 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
 sudo apt update
 sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget at-spi2-core
 
-
-
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
-sudo sed -i '' 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
+sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
 
 apt_shortcuts(){
     tee -a $RCFILE>>/dev/null <<EOT
