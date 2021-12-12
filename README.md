@@ -26,3 +26,8 @@ wget -O /tmp/run.sh https://raw.githubusercontent.com/rvmn/jingpad-init/main/run
 
 sublime text requires snapd, it will install it if not found. But it will crash the script because it requires a reboot.
 solution: reboot and rerun the script with the same settings
+
+## Credits
+
+Pi-apps: https://github.com/Botspot/pi-apps
+Armbian-config: https://github.com/armbian/config
