@@ -82,7 +82,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
 
 # Install basic packages
 sudo apt update
-sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget at-spi2-core
+sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget at-spi2-core ubuntu-restricted-extras
 
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
 sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
