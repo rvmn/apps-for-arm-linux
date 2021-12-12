@@ -64,7 +64,7 @@ if [[ "$yn" =~ "n" ]]; then NVM=false;    else NVM=true;fi
 #   if [[ "$yn" =~ "n" ]]; then ; fi
 #  echo "Answer Y/n."
 #
-read -p"Do you wish to install JingOS updates? (Y/n)? " yn
+read -p"Do you wish to install updates? (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
 # Fix OS-release  to be ubuntu for some repos
