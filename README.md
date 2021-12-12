@@ -1,5 +1,5 @@
-# jingpad-init
-Script for a JingPad A1 tablet (running JingOS-arm) that installs usefull apps and adds some system fixes
+# apps-for-arm-linux
+Script for Linux ARM (arm64 or armhf) that installs usefull apps and adds some system fixes
 
 ## Apps included in installer
 - Docker
@@ -10,11 +10,11 @@ Script for a JingPad A1 tablet (running JingOS-arm) that installs usefull apps a
 - Freetube
 - Inkscape
 - Boxy-SVG
-- Android support (japm)
+- On Jingpad: Android support (japm)
 - Upgrades (firmware)
 - Bash Aliases (quick type)
 - Docker aliases
-- Japm aliases
+- On Jingpad: Japm aliases
 - ZSH
 - NodeJS
 
@@ -22,3 +22,7 @@ Script for a JingPad A1 tablet (running JingOS-arm) that installs usefull apps a
 ```
 wget -O /tmp/run.sh https://raw.githubusercontent.com/rvmn/jingpad-init/main/run.sh& sudo chmod +x /tmp/run.sh && /tmp/run.sh && sudo rm /tmp/run.sh
 ```
+## Issues
+
+sublime text requires snapd, it will install it if not found. But it will crash the script because it requires a reboot.
+solution: reboot and rerun the script with the same settings
