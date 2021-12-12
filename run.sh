@@ -67,7 +67,7 @@ if [[ "$yn" =~ "n" ]]; then ALIASES=false;    else ALIASES=true;fi
 #   if [[ "$yn" =~ "n" ]]; then ; fi
 #  echo "Answer Y/n."
 #
-read -p"Do you wish to install updates? (Y/n)? " yn
+read -p "Do you wish to install updates? (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
 # Fix OS-release  to be ubuntu for some repos
@@ -242,7 +242,7 @@ gitadd(){
     ssh-add ~/.ssh/id_ed25519
     cat ~/.ssh/id_ed25519.pub
     read -p "Installed the SSH creds, copy the previous line fully and paste in the browser, click enter to open the browser"
-    /usr/bin/chromium-browser-stable --new-window https://github.com/settings/keys
+    xdg-open https://github.com/settings/keys
     echo "Remember to use the SSH URL (git@github.com/username/repo.git)"
 }
 
