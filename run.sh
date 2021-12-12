@@ -220,7 +220,7 @@ vscode(){
 }
 
 boxysvg(){
-    wget -qO- https://raw.githubusercontent.com/Botspot/Boxy-SVG-RPi/main/install.sh | bash
+    wget -qO- https://raw.githubusercontent.com/rvmn/Boxy-SVG-RPi/main/install.sh | bash
 }
 
 zsh(){
