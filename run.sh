@@ -82,7 +82,8 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
 
 # Install basic packages
 sudo apt update
-sudo apt install -y git build-essential curl nano  selinux-policy-default ca-certificates  wget at-spi2-core ubuntu-restricted-extras
+sudo apt install -y git build-essential curl nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip
+if [[ $(uname -n) =~ "JingOS" ]]; then sudo apt install -y selinux-policy-default systemsettings; fi
 
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
 sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
@@ -295,7 +296,10 @@ if $NVM; then nvm; fi
 if $ALIASES; then apt_shortcuts; fi
 if $DOCKER ; then docker; fi
 if $ANDROID ; then android; fi 
-if $UPDATES ; then updates; fi    
+if $UPDATES ; then updates; fi 
+
+# fix scaling issues on Jingpad
+#sudo replace "Exec=" "Exec=env QT_SCALE_FACTOR=1.2 GDK_DPI_SCALE=1.5 GDK_SCALE=1" /usr/share/applications/[^o].*.desktop
 
 echo "Finished installing, have fun and see jingpad telegram group for help"
 if $ZSH;then echo "Your default shell was switched to ZSH. Please reboot";fi
