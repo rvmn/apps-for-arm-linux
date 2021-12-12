@@ -183,9 +183,8 @@ gitadd(){
 # Install Docker
 docker(){
     curl -fsSL "https://download.docker.com/linux/debian/gpg" | sudo apt-key add -qq - > /dev/null 2>&1
+    echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu focal stable" > sudo tee /etc/apt/sources.list.d/docker.list
     sudo apt-get update
-    echo "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu focal stable" > \
-    /etc/sudo apt/sources.list.d/docker.list
     sudo apt-get install -y -qq --no-install-recommends docker.io
  }
 
@@ -205,7 +204,7 @@ sublimetext(){
 
 # Install Freetube
 freetube(){
-    sudo dpkg -i $(curl -w "%{filename_effective}" -LO https://sudo apt.raspbian-addons.org/debian/pool/main/f/freetube/$(curl -s https://sudo apt.raspbian-addons.org/debian/pool/main/f/freetube/ | egrep -io "freetube_.*_arm64.deb" | head -n 1 )) && rm freetube_*.deb
+    sudo dpkg -i $(curl -w "%{filename_effective}" -LO https://apt.raspbian-addons.org/debian/pool/main/f/freetube/$(curl -s https://apt.raspbian-addons.org/debian/pool/main/f/freetube/ | egrep -io "freetube_.*_arm64.deb" | head -n 1 )) && rm freetube_*.deb
 }
 
 # Update system
@@ -250,9 +249,9 @@ alias din='echo "inspect a container">/dev/null;docker attach'
 alias dms='echo "start monitoring container (ctrl-c to stop)">/dev/null;docker attach'
 alias dii='echo "get a containers image">/dev/null;docker inspect --format "{{ .Config.Image }} "'
 alias dip='echo "get a containers IP">/dev/null;docker inspect --format "{{ .NetworkSettings.IPAddress }} "'
-alias dipl='echo "get last run containers IP">/dev/null;docker inspect --format "{{ .NetworkSettings.IPAddress }} $(dl)"'
+alias dipl='echo "get last run containers IP">/dev/null;docker inspect --format "{{ .NetworkSettings.IPAddress }} \$(dl)"'
 alias dkd='echo "run daemonized container">/dev/null;docker run -d -P'
-alias drmpf='echo "stop and remove all containers">/dev/null;docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
+alias drmpf='echo "stop and remove all containers">/dev/null;docker stop \$(docker ps -a -q) && docker rm \$(docker ps -a -q)'
 alias dri='echo "remove an image">/dev/null;docker rmi'
 alias drp='echo "remove a container">/dev/null;docker rm'
 alias ds='echo "start a container">/dev/null;fds'
@@ -271,26 +270,27 @@ alias dbu='echo "build dockerfile">/dev/null;fdbu'
 alias dalias='echo "add an alias">/dev/null;fdalias'
 alias ralias='echo "rename an alias">/dev/null;fralias'
 alias dhelp='echo "show all aliases(this)">/dev/null;fdhelp'
-fds() { docker start $(echo ${1-$(dl)}); }
+fds() { docker start \$(echo ${1-\$(dl)}); }
 fdr() { docker run -itd $1; }
-fdst() { docker stop $(echo ${1-$(dl)}); }
+fdst() { docker stop \$(echo ${1-\$(dl)}); }
 fdsh() { docker run -it $1 /bin/bash; }
 fdish() { docker run --privileged -it --entrypoint=/bin/bash $1 -i; }
 fdind() { docker run --privileged -it --entrypoint=$2 $1; }
 fdcm() { docker commit $1 $2; }
-fdsa() { docker start $(docker ps -a -q); }
-fdsta() { docker stop $(docker ps -a -q); }
-fdsav() { dst $([ -z $2 ] && echo $(dl) || echo $1); dcm $([ -z $2 ] && echo $(dl) || echo $1) $2; }
-fdsavs() { dsav $([ -z $2 ] && echo $(dl) || echo $1) $2; ds $([ -z $2 ] && echo $(dl) || echo $1); }
-fdsavi() { dst $1; dcm $(dl) $(din $()); }
-fdprm() { docker rm $(docker ps -a -q); }
-fdrmi() { docker rmi $(docker images -q); }
+fdsa() { docker start \$(docker ps -a -q); }
+fdsta() { docker stop \$(docker ps -a -q); }
+fdsav() { dst \$([ -z $2 ] && echo \$(dl) || echo $1); dcm \$([ -z $2 ] && echo \$(dl) || echo $1) $2; }
+fdsavs() { dsav \$([ -z $2 ] && echo \$(dl) || echo $1) $2; ds \$([ -z $2 ] && echo \$(dl) || echo $1); }
+fdsavi() { dst $1; dcm \$(dl) \$(din \$()); }
+fdprm() { docker rm \$(docker ps -a -q); }
+fdrmi() { docker rmi \$(docker images -q); }
 fdbu() { docker build -t=$1; }
 fdhelp() { alias | grep 'alias d' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
 fdalias() { grep -q $1 ~/.bashrc && sed "s/$1.*/$1(){ $2 ; }/" -i ~/.bashrc || sed "$ a\\$1(){ $2 ; }" -i ~/.bashrc; source ~/.bashrc; }
 fralias() { sed -i "s/$1/$2/" ~/.bashrc; source ~/.bashrc; }
 EOT
 } 
+
 
 ##### Running the stuff ######
 
