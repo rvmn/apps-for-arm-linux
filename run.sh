@@ -3,7 +3,7 @@
 ##### User interaction #####
 
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
-RCFILE="~/.bashrc"
+RCFILE=~/.bashrc
 if [[ -f ~/.zshrc ]];  then 
     read -p "You have ZSH installed, revert back to BASH (Y/n)? " yn
     if [[ "$yn" =~ "n" ]]; then echo "leaving ZSH installed"; else
@@ -315,5 +315,5 @@ if $UPDATES ; then updates; fi
 # fix scaling issues on Jingpad
 #sudo replace "Exec=" "Exec=env QT_SCALE_FACTOR=1.2 GDK_DPI_SCALE=1.5 GDK_SCALE=1" /usr/share/applications/[^o].*.desktop
 
-echo "Finished installing, have fun and see jingpad telegram group for help"
+echo "Finished installing, have fun"
 if $ZSH;then echo "Your default shell was switched to ZSH. Please reboot";fi
