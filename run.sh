@@ -1,5 +1,7 @@
  #!/usr/bin/env bash
 
+##### User interaction #####
+
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
 RCFILE="~/.bashrc"
 if [[ -f ~/.zshrc ]];  then 
@@ -25,7 +27,7 @@ if [[ $(uname -n) =~ "JingOS" ]]; then
  read -p "Install Android support (japm) (Y/n)? " yn
  if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;
   read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
-  if [[ "$yn" =~ "n" ]]; then echo '';  else japm_shortcuts;fi
+  if [[ "$yn" =~ "n" ]]; then JAPMALIASES=false;  else JAPMALIASES=true;fi
  fi
 fi
 
@@ -35,7 +37,7 @@ if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true;fi
 read -p "Install Docker (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;
  read -p "Install Docker aliases (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
- if [[ "$yn" =~ "n" ]]; then echo '';  else docker_shortcuts;fi
+ if [[ "$yn" =~ "n" ]]; then DOCKERALIASES=false;  else DOCKERALIASES=true;fi
 fi
 
 read -p "Install Stremio (Streaming app) (Y/n)? " yn
@@ -76,6 +78,8 @@ if [[ "$yn" =~ "n" ]]; then ALIASES=false;    else ALIASES=true;fi
 read -p "Do you wish to install updates? (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
+##### General package installs #####
+
 # Fix OS-release  to be ubuntu for some repos
 sudo sed -i 's/ID=jingos/ID=ubuntu/' /etc/os-release
 
@@ -94,84 +98,8 @@ if [[ $(uname -n) =~ "JingOS" ]]; then sudo apt install -y selinux-policy-defaul
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
 sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
 
-apt_shortcuts(){
-    tee -a $RCFILE>>/dev/null <<EOT
-# apt aliases
-alias ai='echo "install package">/dev/null;sudo apt install -y'
-alias au='echo "uninstall package">/dev/null;sudo apt remove'
-alias al='echo "list all packages installed">/dev/null;sudo apt list --installed'
-alias av='echo "list all versions of a package (regexable)">/dev/null;sudo apt-show-versions -a -r'
-alias ahelp='echo "show help (this)">/dev/null;fahelp'
-fahelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
-EOT
-}
 
-japm_shortcuts(){
-    tee -a $RCFILE>>/dev/null <<EOT
-# japm aliases
-alias ji='echo "install package">/dev/null;sudo japm install -i'
-alias ju='echo "uninstall package">/dev/null;sudo japm uninstall'
-alias jl='echo "list all packages installed">/dev/null;japm list -a'
-alias jhelp='echo "show help (this)">/dev/null;fjhelp'
-fjhelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
-EOT
-}
-
-docker_shortcuts(){
-    tee -a $RCFILE>>/dev/null <<EOT
-# docker aliases
-alias dq='echo "search docker ecosystem">/dev/null;docker search'
-alias dl='echo "get latest container ID">/dev/null;docker ps -l -q'
-alias dr='echo "run an image (daemonized)">/dev/null;fdr'
-alias dp='echo "show running containers">/dev/null;docker ps'
-alias dpa='echo "show all containers">/dev/null;docker ps -a'
-alias di='echo "show all images">/dev/null;docker images'
-alias din='echo "inspect a container">/dev/null;docker inspect'
-alias din='echo "inspect a container">/dev/null;docker attach'
-alias dms='echo "start monitoring container (ctrl-c to stop)">/dev/null;docker attach'
-alias dii='echo "get a containers image">/dev/null;docker inspect --format "{{ .Config.Image }} "'
-alias dip='echo "get a containers IP">/dev/null;docker inspect --format "{{ .NetworkSettings.IPAddress }} "'
-alias dipl='echo "get last run containers IP">/dev/null;docker inspect --format "{{ .NetworkSettings.IPAddress }} $(dl)"'
-alias dkd='echo "run daemonized container">/dev/null;docker run -d -P'
-alias drmpf='echo "stop and remove all containers">/dev/null;docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
-alias dri='echo "remove an image">/dev/null;docker rmi'
-alias drp='echo "remove a container">/dev/null;docker rm'
-alias ds='echo "start a container">/dev/null;fds'
-alias dst='echo "stop a container">/dev/null;fdst'
-alias dsh='echo "run shell in a container or image">/dev/null;fdsh'   
-alias dish='echo "run shell in an entrypoint container">/dev/null;fdish'
-alias dind='echo "run command in an entrypoint container">/dev/null;fdind'
-alias dcm='echo "commit a container to image">/dev/null;fdcm'
-alias dsa='echo "start all containers">/dev/null;fdsa'
-alias dsta='echo "stop all containers">/dev/null;fdsta'
-alias dsav='echo "stop and save a container to an image">/dev/null;fdsav'
-alias dsavi='echo "stop, save a container to an image, and start it again">/dev/null;fdsavi'
-alias drmp='echo "remove all containers, except running ones">/dev/null;fdprm'
-alias drmi='echo "remove all images, except ones used">/dev/null;fdrmi'
-alias dbu='echo "build dockerfile">/dev/null;fdbu'
-alias dalias='echo "add an alias">/dev/null;fdalias'
-alias ralias='echo "rename an alias">/dev/null;fralias'
-alias dhelp='echo "show all aliases(this)">/dev/null;fdhelp'
-fds() { docker start $(echo ${1-$(dl)}); }
-fdr() { docker run -itd $1; }
-fdst() { docker stop $(echo ${1-$(dl)}); }
-fdsh() { docker run -it $1 /bin/bash; }
-fdish() { docker run --privileged -it --entrypoint=/bin/bash $1 -i; }
-fdind() { docker run --privileged -it --entrypoint=$2 $1; }
-fdcm() { docker commit $1 $2; }
-fdsa() { docker start $(docker ps -a -q); }
-fdsta() { docker stop $(docker ps -a -q); }
-fdsav() { dst $([ -z $2 ] && echo $(dl) || echo $1); dcm $([ -z $2 ] && echo $(dl) || echo $1) $2; }
-fdsavs() { dsav $([ -z $2 ] && echo $(dl) || echo $1) $2; ds $([ -z $2 ] && echo $(dl) || echo $1); }
-fdsavi() { dst $1; dcm $(dl) $(din $()); }
-fdprm() { docker rm $(docker ps -a -q); }
-fdrmi() { docker rmi $(docker images -q); }
-fdbu() { docker build -t=$1; }
-fdhelp() { alias | grep 'alias d' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
-fdalias() { grep -q $1 ~/.bashrc && sed "s/$1.*/$1(){ $2 ; }/" -i ~/.bashrc || sed "$ a\\$1(){ $2 ; }" -i ~/.bashrc; source ~/.bashrc; }
-fralias() { sed -i "s/$1/$2/" ~/.bashrc; source ~/.bashrc; }
-EOT
-} 
+##### Install scripts #####
 
 nvm(){
     #Install nvm manager:
@@ -284,6 +212,88 @@ freetube(){
 updates(){
     sudo apt update && sudo apt upgrade
 }
+##### Alias definitions #####
+apt_shortcuts(){
+    tee -a $RCFILE>>/dev/null <<EOT
+# apt aliases
+alias ai='echo "install package">/dev/null;sudo apt install -y'
+alias au='echo "uninstall package">/dev/null;sudo apt remove'
+alias al='echo "list all packages installed">/dev/null;sudo apt list --installed'
+alias av='echo "list all versions of a package (regexable)">/dev/null;sudo apt-show-versions -a -r'
+alias ahelp='echo "show help (this)">/dev/null;fahelp'
+fahelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
+EOT
+}
+
+japm_shortcuts(){
+    tee -a $RCFILE>>/dev/null <<EOT
+# japm aliases
+alias ji='echo "install package">/dev/null;sudo japm install -i'
+alias ju='echo "uninstall package">/dev/null;sudo japm uninstall'
+alias jl='echo "list all packages installed">/dev/null;japm list -a'
+alias jhelp='echo "show help (this)">/dev/null;fjhelp'
+fjhelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
+EOT
+}
+
+docker_shortcuts(){
+    tee -a $RCFILE>>/dev/null <<EOT
+# docker aliases
+alias dq='echo "search docker ecosystem">/dev/null;docker search'
+alias dl='echo "get latest container ID">/dev/null;docker ps -l -q'
+alias dr='echo "run an image (daemonized)">/dev/null;fdr'
+alias dp='echo "show running containers">/dev/null;docker ps'
+alias dpa='echo "show all containers">/dev/null;docker ps -a'
+alias di='echo "show all images">/dev/null;docker images'
+alias din='echo "inspect a container">/dev/null;docker inspect'
+alias din='echo "inspect a container">/dev/null;docker attach'
+alias dms='echo "start monitoring container (ctrl-c to stop)">/dev/null;docker attach'
+alias dii='echo "get a containers image">/dev/null;docker inspect --format "{{ .Config.Image }} "'
+alias dip='echo "get a containers IP">/dev/null;docker inspect --format "{{ .NetworkSettings.IPAddress }} "'
+alias dipl='echo "get last run containers IP">/dev/null;docker inspect --format "{{ .NetworkSettings.IPAddress }} $(dl)"'
+alias dkd='echo "run daemonized container">/dev/null;docker run -d -P'
+alias drmpf='echo "stop and remove all containers">/dev/null;docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
+alias dri='echo "remove an image">/dev/null;docker rmi'
+alias drp='echo "remove a container">/dev/null;docker rm'
+alias ds='echo "start a container">/dev/null;fds'
+alias dst='echo "stop a container">/dev/null;fdst'
+alias dsh='echo "run shell in a container or image">/dev/null;fdsh'   
+alias dish='echo "run shell in an entrypoint container">/dev/null;fdish'
+alias dind='echo "run command in an entrypoint container">/dev/null;fdind'
+alias dcm='echo "commit a container to image">/dev/null;fdcm'
+alias dsa='echo "start all containers">/dev/null;fdsa'
+alias dsta='echo "stop all containers">/dev/null;fdsta'
+alias dsav='echo "stop and save a container to an image">/dev/null;fdsav'
+alias dsavi='echo "stop, save a container to an image, and start it again">/dev/null;fdsavi'
+alias drmp='echo "remove all containers, except running ones">/dev/null;fdprm'
+alias drmi='echo "remove all images, except ones used">/dev/null;fdrmi'
+alias dbu='echo "build dockerfile">/dev/null;fdbu'
+alias dalias='echo "add an alias">/dev/null;fdalias'
+alias ralias='echo "rename an alias">/dev/null;fralias'
+alias dhelp='echo "show all aliases(this)">/dev/null;fdhelp'
+fds() { docker start $(echo ${1-$(dl)}); }
+fdr() { docker run -itd $1; }
+fdst() { docker stop $(echo ${1-$(dl)}); }
+fdsh() { docker run -it $1 /bin/bash; }
+fdish() { docker run --privileged -it --entrypoint=/bin/bash $1 -i; }
+fdind() { docker run --privileged -it --entrypoint=$2 $1; }
+fdcm() { docker commit $1 $2; }
+fdsa() { docker start $(docker ps -a -q); }
+fdsta() { docker stop $(docker ps -a -q); }
+fdsav() { dst $([ -z $2 ] && echo $(dl) || echo $1); dcm $([ -z $2 ] && echo $(dl) || echo $1) $2; }
+fdsavs() { dsav $([ -z $2 ] && echo $(dl) || echo $1) $2; ds $([ -z $2 ] && echo $(dl) || echo $1); }
+fdsavi() { dst $1; dcm $(dl) $(din $()); }
+fdprm() { docker rm $(docker ps -a -q); }
+fdrmi() { docker rmi $(docker images -q); }
+fdbu() { docker build -t=$1; }
+fdhelp() { alias | grep 'alias d' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
+fdalias() { grep -q $1 ~/.bashrc && sed "s/$1.*/$1(){ $2 ; }/" -i ~/.bashrc || sed "$ a\\$1(){ $2 ; }" -i ~/.bashrc; source ~/.bashrc; }
+fralias() { sed -i "s/$1/$2/" ~/.bashrc; source ~/.bashrc; }
+EOT
+} 
+
+##### Running the stuff ######
+
 if $ZSH ; then zsh; fi
 if [[ -f ~/.zshrc ]];  then RCFILE="~/.zshrc"; fi
 if $GITADD ; then gitadd; fi
@@ -296,6 +306,8 @@ if $FREETUBE ; then freetube; fi
 if $BOXYSVG ; then boxysvg; fi
 if $NVM; then nvm; fi
 if $ALIASES; then apt_shortcuts; fi
+if $DOCKERALIASES; then docker_shortcuts; fi
+if $JAPMALIASES; then japm_shortcuts; fi
 if $DOCKER ; then docker; fi
 if $ANDROID ; then android; fi 
 if $UPDATES ; then updates; fi 
