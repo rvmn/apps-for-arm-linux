@@ -295,7 +295,7 @@ EOT
 ##### Running the stuff ######
 
 if $ZSH ; then zsh; fi
-if [[ -f ~/.zshrc ]];  then RCFILE="~/.zshrc"; fi
+if [[ -f ~/.zshrc ]];  then RCFILE=~/.zshrc; fi
 if $GITADD ; then gitadd; fi
 if $STREMIO ; then stremio; fi
 if $SUBLIME; then sublimetext; fi
