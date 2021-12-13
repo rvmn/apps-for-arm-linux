@@ -4,19 +4,19 @@ Script for Linux ARM (arm64 or armhf) that installs usefull apps and adds some s
 ## Apps included in installer
 - Docker
 - Stremio
-- Sublime Text
+- Sublime Text (REMOVED, uses snap so needs reboot making it not 'one-simple-install compatible', searching for alternatives)
 - VSCode
 - Ulauncher
 - Freetube
 - Inkscape
 - Boxy-SVG
-- On Jingpad: Android support (japm)
 - Upgrades (firmware)
 - Bash Aliases (quick type)
 - Docker aliases
-- On Jingpad: Japm aliases
 - ZSH
 - NodeJS
+
+- For Jingpad A1 (https://jingos-official.myshopify.com/): Android support (japm) and japm-aliases
 
 ## Run
 ```
