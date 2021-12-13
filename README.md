@@ -1,5 +1,5 @@
 # apps-for-arm-linux
-Script for Linux ARM (arm64 or armhf) that installs usefull apps and adds some system fixes
+Script for Ubuntu/Debian Linux ARM (arm64 or armhf) that installs usefull apps and adds some system fixes
 
 ## Apps included in installer
 - Docker
@@ -24,8 +24,9 @@ wget -O - https://raw.githubusercontent.com/rvmn/jingpad-init/main/run.sh > /tmp
 ```
 ## Issues
 
-sublime text requires snapd, it will install it if not found. But it will crash the script because it requires a reboot.
-solution: reboot and rerun the script with the same settings
+Upgrade might download a lot and sometimes fails halfway with some error. As it is done last it doesnt cause any problem for other installs.
+
+Just run 'sudo apt upgrade -y' again
 
 ## Credits
 
