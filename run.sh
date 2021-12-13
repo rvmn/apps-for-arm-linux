@@ -1,6 +1,8 @@
- #!/usr/bin/env bash
+ #!/bin/bash
 
 ##### User interaction #####
+# check if running in bash shell 
+if [ ! $(ps -p $$ | cut -d' ' -f9) = "bash" ]; then echo "You need to run this script with bash:"; echo "/bin/bash /tmp/run.sh"; fi
 
 echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
 RCFILE=~/.bashrc
@@ -17,27 +19,29 @@ if [[ -f ~/.zshrc ]];  then
         rm ~/.zshrc
         echo "\nYour default shell was switched to: \Z1BASH\Z0\n\nPlease reboot." 
         read -p "Would you like to quit this app now? (Y/n)" yn
-        if [[ "$yn" =~ "n" ]]; then echo "continuing app"; else exit;fi
+        if [[ "$yn" =~ "n" ]]; then echo "continuing app"; else exit; fi
     fi
 fi
 read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then GITADD=false;    else GITADD=true;fi
+if [[ "$yn" =~ "n" ]]; then GITADD=false;    else gitadd; fi
+ANDROID=false
+JAPMALIASES=false
 
 if [[ $(uname -n) =~ "JingOS" ]]; then
  read -p "Install Android support (japm) (Y/n)? " yn
  if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;
   read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
-  if [[ "$yn" =~ "n" ]]; then JAPMALIASES=false;  else JAPMALIASES=true;fi
+  if [[ "$yn" =~ "n" ]]; then JAPMALIASES=false;  else JAPMALIASES=true; fi
  fi
 fi
 
 read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true;fi
+if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true; fi
 
 read -p "Install Docker (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;
  read -p "Install Docker aliases (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
- if [[ "$yn" =~ "n" ]]; then DOCKERALIASES=false;  else DOCKERALIASES=true;fi
+ if [[ "$yn" =~ "n" ]]; then DOCKERALIASES=false;  else DOCKERALIASES=true; fi
 fi
 
 read -p "Install Stremio (Streaming app) (Y/n)? " yn
@@ -49,8 +53,8 @@ if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;    else INKSCAPE=true;fi
 read -p "Install Boxy-SVG (SVG editor) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then BOXYSVG=false;    else BOXYSVG=true;fi
 
-read -p "Install Sublime Text (Code editor) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then SUBLIME=false;    else SUBLIME=true;fi
+#read -p "Install Sublime Text (Code editor) (Y/n)? " yn
+#if [[ "$yn" =~ "n" ]]; then SUBLIME=false;    else SUBLIME=true;fi
 
 read -p "Install Visual Studio Code (Code editor) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then VSCODE=false;    else VSCODE=true;fi
@@ -106,7 +110,7 @@ nvm(){
     export NVM_DIR="$HOME/.nvm"
     mkdir -p "$NVM_DIR"
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash || error "Failed to install nvm!"
-    source "${DIRECTORY}/api"
+    #source "${DIRECTORY}/api"
     if [ "$arch" == 32 ];then
       #armhf, so patch nvm script to forcibly use armhf
       sed -i 's/^  nvm_echo "${NVM_ARCH}"/  NVM_ARCH=armv7l ; nvm_echo "${NVM_ARCH}"/g' "$NVM_DIR/nvm.sh"
@@ -209,7 +213,7 @@ freetube(){
 
 # Update system
 updates(){
-    sudo apt update && sudo apt upgrade
+    sudo apt update && sudo apt upgrade -y
 }
 ##### Alias definitions #####
 apt_shortcuts(){
@@ -296,9 +300,9 @@ EOT
 
 if $ZSH ; then zsh; fi
 if [[ -f ~/.zshrc ]];  then RCFILE=~/.zshrc; fi
-if $GITADD ; then gitadd; fi
+#if $GITADD ; then gitadd; fi
 if $STREMIO ; then stremio; fi
-if $SUBLIME; then sublimetext; fi
+#if $SUBLIME; then sublimetext; fi
 if $VSCODE ; then vscode; fi
 if $ULAUNCHER ; then ulauncher; fi
 if $INKSCAPE ; then inkscape; fi
