@@ -153,10 +153,11 @@ stremiobuild(){
 }
 
 stremiodeb(){
- curl -o /tmp.tmp.zip -s https://api.github.com/repos/shivasiddharth/Stremio-RaspberryPi/releases/latest | grep "browser_download_url" | grep -C0 $(dpkg --print-architecture) |  cut -d : -f 2,3 | tr -d \" | wget -qi -
- cd /tmp
- unzip tmp.zip
- sudo dpkg --force-confold -i *.deb
+  cd /tmp
+ curl -s https://api.github.com/repos/shivasiddharth/Stremio-RaspberryPi/releases/latest | grep "browser_download_url" | grep -C0 $(dpkg --print-architecture) |  cut -d : -f 2,3 | tr -d \" | wget -qi -
+  unzip Stremio*.zip
+   sudo dpkg --force-confold -i Stremio*t/lib*.deb
+ sudo dpkg --force-confold -i Stremio*t/stremio*.deb
 }
 
 ulauncher(){
