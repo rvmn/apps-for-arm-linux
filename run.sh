@@ -45,7 +45,10 @@ if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;
 fi
 
 read -p "Install Stremio (Streaming app) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then STREMIO=false;    else STREMIO=true;fi
+if [[ "$yn" =~ "n" ]]; then STREMIO=0;    else 
+ read -p "Build from source (gets v5.0 instead of build's v4.4) (Y/n)?" yn 
+ if [[ "$yn" =~ "n" ]]; then STREMIO=1;else STREMIO=2;fi
+fi
 
 read -p "Install Inkscape (SVG editor) (Y/n)? " yn
 if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;    else INKSCAPE=true;fi
@@ -145,11 +148,18 @@ inkscape(){
     sudo apt install -y inkscape
 }
 
-stremio(){
+stremiobuild(){
     wget -qO- https://raw.githubusercontent.com/rvmn/stremio-arm/main/stremio-build.sh | bash
 }
 
- ulauncher(){
+stremiodeb(){
+ curl -o /tmp.tmp.zip -s https://api.github.com/repos/shivasiddharth/Stremio-RaspberryPi/releases/latest | grep "browser_download_url" | grep -C0 $(dpkg --print-architecture) |  cut -d : -f 2,3 | tr -d \" | wget -qi -
+ cd /tmp
+ unzip tmp.zip
+ sudo dpkg --force-confold -i *.deb
+}
+
+ulauncher(){
     sudo apt install -y https://github.com/Ulauncher/Ulauncher/releases/download/5.14.1/ulauncher_5.14.1_all.deb gir1.2-appindicator3-0.1 python3-distutils-extra python3-levenshtein python3-websocket
  }
 
@@ -301,7 +311,8 @@ EOT
 if $ZSH ; then zsh; fi
 if [[ -f ~/.zshrc ]];  then RCFILE=~/.zshrc; fi
 #if $GITADD ; then gitadd; fi
-if $STREMIO ; then stremio; fi
+if [[ $STREMIO == 1 ]]; then stremiodeb; fi
+if [[ $STREMIO == 2 ]]; then stremiobuild; fi
 #if $SUBLIME; then sublimetext; fi
 if $VSCODE ; then vscode; fi
 if $ULAUNCHER ; then ulauncher; fi
