@@ -180,6 +180,7 @@ zsh(){
 
 # Add git SSH creds to system
 gitadd(){
+    sudo apt install git -y
     FILE="/home/$USER/.ssh/known_hosts"
     if [ -f "$FILE" ]; then rm $FILE; fi
     read -p "Enter your email address:" EMAIL 
@@ -246,7 +247,7 @@ alias ji='echo "install package">/dev/null;sudo japm install -i'
 alias ju='echo "uninstall package">/dev/null;sudo japm uninstall'
 alias jl='echo "list all packages installed">/dev/null;japm list -a'
 alias jhelp='echo "show help (this)">/dev/null;fjhelp'
-fjhelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
+fjhelp() { alias | grep 'alias j' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/null.*/\1                =>                \2/'| sed "s/['|\']//g" | sort; }
 EOT
 }
 
