@@ -1,113 +1,5 @@
- #!/bin/bash
-
-##### User interaction #####
-# check if running in bash shell 
-if [ ! $(ps -p $$ | cut -d' ' -f9) = "bash" ]; then echo "You need to run this script with bash:"; echo "/bin/bash /tmp/run.sh"; fi
-
-echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
-RCFILE=~/.bashrc
-if [[ -f ~/.zshrc ]];  then 
-    read -p "You have ZSH installed, revert back to BASH (Y/n)? " yn
-    if [[ "$yn" =~ "n" ]]; then echo "leaving ZSH installed"; else
-        sudo apt-get purge -y armbian-zsh
-        BASHLOCATION=$(grep /bash$ /etc/shells | tail -1)
-        # change shell back to bash for future users
-        sudo sed -i "s|^SHELL=.*|SHELL=${BASHLOCATION}|" /etc/default/useradd
-        sudo sed -i "s|^DSHELL=.*|DSHELL=${BASHLOCATION}|" /etc/adduser.conf
-        # change to BASH shell for root and all normal users
-        sudo awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534 || $3 == 0) print $1}' /etc/passwd | xargs -L1 chsh -s $(grep /bash$ /etc/shells | tail -1)
-        rm ~/.zshrc
-        echo "\nYour default shell was switched to: \Z1BASH\Z0\n\nPlease reboot." 
-        read -p "Would you like to quit this app now? (Y/n)" yn
-        if [[ "$yn" =~ "n" ]]; then echo "continuing app"; else exit; fi
-    fi
-fi
-read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then GITADD=false;    else gitadd; fi
-ANDROID=false
-JAPMALIASES=false
-
-if [[ $(uname -n) =~ "JingOS" ]]; then
- read -p "Install Android support (japm) (Y/n)? " yn
- if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;
-  read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
-  if [[ "$yn" =~ "n" ]]; then JAPMALIASES=false;  else JAPMALIASES=true; fi
- fi
-fi
-
-read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true; fi
-
-read -p "Install Docker (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;
- read -p "Install Docker aliases (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
- if [[ "$yn" =~ "n" ]]; then DOCKERALIASES=false;  else DOCKERALIASES=true; fi
-fi
-
-read -p "Install Stremio (Streaming app) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then STREMIO=0;    else 
- read -p "Build from source (gets v5.0 instead of build's v4.4) (Y/n)?" yn 
- if [[ "$yn" =~ "n" ]]; then STREMIO=1;else STREMIO=2;fi
-fi
-
-read -p "Install Inkscape (SVG editor) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;    else INKSCAPE=true;fi
-
-read -p "Install Boxy-SVG (SVG editor) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then BOXYSVG=false;    else BOXYSVG=true;fi
-
-#read -p "Install Sublime Text (Code editor) (Y/n)? " yn
-#if [[ "$yn" =~ "n" ]]; then SUBLIME=false;    else SUBLIME=true;fi
-
-read -p "Install Visual Studio Code (Code editor) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then VSCODE=false;    else VSCODE=true;fi
-
-read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then FREETUBE=false;    else FREETUBE=true;fi
-
-read -p "Install NVM and NodeJS (JS V8 framework)  (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then NVM=false;    else NVM=true;fi
-
-read -p "Install ZSH (Advanced shell)  (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then ZSH=false;    else ZSH=true;fi
-
-read -p "Install Apt aliases (apt manager aliases, see ahelp)  (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then ALIASES=false;    else ALIASES=true;fi
-
-
-# Pi-Apps needs to be reworked since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
-
-##   read -p "Install Pi-Apps (app installer) (Y/n)? " yn
-#    if [[ "$yn" =~ "Y" ]]; then make install; fi
-#   if [[ "$yn" =~ "n" ]]; then ; fi
-#  echo "Answer Y/n."
-#
-read -p "Do you wish to install updates? (Y/n)? " yn
-if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
-
-##### General package installs #####
-
-# Fix OS-release  to be ubuntu for some repos
-sudo sed -i 's/ID=jingos/ID=ubuntu/' /etc/os-release
-
-# Fix auth for xserver to allow sudo running gui apps from cli like 'sudo gedit file.txt'
-xhost + localhost
-
-# Add armbian repo
-echo "deb [arch=arm64] http://apt.armbian.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/armbian.list
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
-
-# Install basic packages
-sudo apt update
-sudo apt install -y git build-essential curl nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip
-if [[ $(uname -n) =~ "JingOS" ]]; then sudo apt install -y selinux-policy-default systemsettings; fi
-
-# Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
-sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
-
-
+#!/usr/bin/env bash
 ##### Install scripts #####
-
 nvm(){
     #Install nvm manager:
     export NVM_DIR="$HOME/.nvm"
@@ -306,6 +198,113 @@ fdalias() { grep -q $1 ~/.bashrc && sed "s/$1.*/$1(){ $2 ; }/" -i ~/.bashrc || s
 fralias() { sed -i "s/$1/$2/" ~/.bashrc; source ~/.bashrc; }
 EOT
 } 
+
+##### User interaction #####
+
+# check if running in bash shell 
+if [ ! $(ps -p $$ | cut -d' ' -f9) = "bash" ]; then echo "You need to run this script with bash:"; echo "/bin/bash /tmp/run.sh"; fi
+
+echo "Hello, a few questions will be asked first, before installing the tools and fixes, so please stay with me for a moment."
+RCFILE=~/.bashrc
+if [[ -f ~/.zshrc ]];  then 
+    read -p "You have ZSH installed, revert back to BASH (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then echo "leaving ZSH installed"; else
+        sudo apt-get purge -y armbian-zsh
+        BASHLOCATION=$(grep /bash$ /etc/shells | tail -1)
+        # change shell back to bash for future users
+        sudo sed -i "s|^SHELL=.*|SHELL=${BASHLOCATION}|" /etc/default/useradd
+        sudo sed -i "s|^DSHELL=.*|DSHELL=${BASHLOCATION}|" /etc/adduser.conf
+        # change to BASH shell for root and all normal users
+        sudo awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534 || $3 == 0) print $1}' /etc/passwd | xargs -L1 chsh -s $(grep /bash$ /etc/shells | tail -1)
+        rm ~/.zshrc
+        echo "\nYour default shell was switched to: \Z1BASH\Z0\n\nPlease reboot." 
+        read -p "Would you like to quit this app now? (Y/n)" yn
+        if [[ "$yn" =~ "n" ]]; then echo "continuing app"; else exit; fi
+    fi
+fi
+read -p "Install git SSH-keypair for connecting your git account (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then GITADD=false;    else gitadd; fi
+ANDROID=false
+JAPMALIASES=false
+
+if [[ $(uname -n) =~ "JingOS" ]]; then
+ read -p "Install Android support (japm) (Y/n)? " yn
+ if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;
+  read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
+  if [[ "$yn" =~ "n" ]]; then JAPMALIASES=false;  else JAPMALIASES=true; fi
+ fi
+fi
+
+read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then ULAUNCHER=false;    else ULAUNCHER=true; fi
+
+read -p "Install Docker (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then DOCKER=false;    else DOCKER=true;
+ read -p "Install Docker aliases (bash aliases, use command 'dhelp' to view them) (Y/n)? " yn
+ if [[ "$yn" =~ "n" ]]; then DOCKERALIASES=false;  else DOCKERALIASES=true; fi
+fi
+
+read -p "Install Stremio (Streaming app) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then STREMIO=0;    else 
+ read -p "Build from source (gets v5.0 instead of build's v4.4) (Y/n)?" yn 
+ if [[ "$yn" =~ "n" ]]; then STREMIO=1;else STREMIO=2;fi
+fi
+
+read -p "Install Inkscape (SVG editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then INKSCAPE=false;    else INKSCAPE=true;fi
+
+read -p "Install Boxy-SVG (SVG editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then BOXYSVG=false;    else BOXYSVG=true;fi
+
+#read -p "Install Sublime Text (Code editor) (Y/n)? " yn
+#if [[ "$yn" =~ "n" ]]; then SUBLIME=false;    else SUBLIME=true;fi
+
+read -p "Install Visual Studio Code (Code editor) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then VSCODE=false;    else VSCODE=true;fi
+
+read -p "Install Freetube (Ad-free YouTube streamer) (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then FREETUBE=false;    else FREETUBE=true;fi
+
+read -p "Install NVM and NodeJS (JS V8 framework)  (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then NVM=false;    else NVM=true;fi
+
+read -p "Install ZSH (Advanced shell)  (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then ZSH=false;    else ZSH=true;fi
+
+read -p "Install Apt aliases (apt manager aliases, see ahelp)  (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then ALIASES=false;    else ALIASES=true;fi
+
+
+# Pi-Apps needs to be reworked since it doesnt work OOB, but copying install links and manual installation works as its arm64 compatible
+
+##   read -p "Install Pi-Apps (app installer) (Y/n)? " yn
+#    if [[ "$yn" =~ "Y" ]]; then make install; fi
+#   if [[ "$yn" =~ "n" ]]; then ; fi
+#  echo "Answer Y/n."
+#
+read -p "Do you wish to install updates? (Y/n)? " yn
+if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
+
+##### General package installs #####
+
+# Fix OS-release  to be ubuntu for some repos
+sudo sed -i 's/ID=jingos/ID=ubuntu/' /etc/os-release
+
+# Fix auth for xserver to allow sudo running gui apps from cli like 'sudo gedit file.txt'
+xhost + localhost
+
+# Add armbian repo
+echo "deb [arch=arm64] http://apt.armbian.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/armbian.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
+
+# Install basic packages
+sudo apt update
+sudo apt install -y git build-essential curl nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip
+if [[ $(uname -n) =~ "JingOS" ]]; then sudo apt install -y selinux-policy-default systemsettings; fi
+
+# Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
+sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
+
 
 
 ##### Running the stuff ######
