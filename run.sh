@@ -98,7 +98,7 @@ docker(){
 
 # Install android
 android(){
-    sudo apt install -y jappmanagerd japm android-compatible-env
+    sudo apt install -y libjapm jappmanagerd japm android-compatible-env
 }
 
 # Install Sublime Text
