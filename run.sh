@@ -46,10 +46,9 @@ stremiobuild(){
 
 stremiodeb(){
   cd /tmp
- curl -s https://api.github.com/repos/shivasiddharth/Stremio-RaspberryPi/releases/latest | grep "browser_download_url" | grep -C0 $(dpkg --print-architecture) |  cut -d : -f 2,3 | tr -d \" | wget -qi -
+  curl -s https://api.github.com/repos/shivasiddharth/Stremio-RaspberryPi/releases/latest | grep "browser_download_url" | grep -C0 $(dpkg --print-architecture) |  cut -d : -f 2,3 | tr -d \" | wget -qi -
   unzip Stremio*.zip
-   sudo dpkg --force-confold -i Stremio*t/lib*.deb
- sudo dpkg --force-confold -i Stremio*t/stremio*.deb
+  sudo apt-get install ./libfdk*_arm64.deb ./stremio_*_arm64.deb -f -y
 }
 
 ulauncher(){
