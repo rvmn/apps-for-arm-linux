@@ -96,33 +96,47 @@ docker(){
  }
 # wayvnc build
 wayvnc(){
-sudo apt install -y meson libdrm-dev libgbm-dev libpixman-1-0 libpixman-1-dev wget
-wget -qO /tmp/0.deb http://ports.ubuntu.com/pool/main/libx/libxkbcommon/libxkbcommon0_1.0.3-2_arm64.deb
-wget -qO /tmp/1.deb http://ports.ubuntu.com/pool/main/libx/libxkbcommon/libxkbcommon-dev_1.0.3-2_arm64.deb
-wget -qO /tmp/3.deb http://ports.ubuntu.com/pool/universe/n/ninja-build/ninja-build_1.10.1-1_arm64.deb
-wget -qO /tmp/4.deb http://ports.ubuntu.com/pool/universe/m/meson/meson_0.57.0+really0.56.2-0.1_all.deb
-sudo dpkg -i /tmp/0.deb
-sudo dpkg -i /tmp/1.deb
-sudo dpkg -i /tmp/3.deb
-sudo dpkg -i /tmp/4.deb
 
-git clone https://github.com/any1/wayvnc.git
-git clone https://github.com/any1/neatvnc.git
-git clone https://github.com/any1/aml.git
+    # install build tools required, and also runtime libs needed
+    sudo apt install -y meson libdrm-dev libgbm-dev libpixman-1-0 libpixman-1-dev wget libwayland-dev cmake libturbojpeg gnutls-bin
 
-mkdir wayvnc/subprojects
-cd wayvnc/subprojects
-ln -s ../../neatvnc .
-ln -s ../../aml .
-cd -
+    # temporary install later (21.04 hirsute) versions of some tools, will be reverted later to not break apt package system
+    wget -qO /tmp/0.deb http://ports.ubuntu.com/pool/main/libx/libxkbcommon/libxkbcommon0_1.0.3-2_arm64.deb
+    wget -qO /tmp/1.deb http://ports.ubuntu.com/pool/main/libx/libxkbcommon/libxkbcommon-dev_1.0.3-2_arm64.deb
+    wget -qO /tmp/3.deb http://ports.ubuntu.com/pool/universe/n/ninja-build/ninja-build_1.10.1-1_arm64.deb
+    wget -qO /tmp/4.deb http://ports.ubuntu.com/pool/universe/m/meson/meson_0.57.0+really0.56.2-0.1_all.deb
+    sudo dpkg -i /tmp/0.deb
+    sudo dpkg -i /tmp/1.deb
+    sudo dpkg -i /tmp/3.deb
+    sudo dpkg -i /tmp/4.deb
+    cd ~/apps/
+    git clone https://github.com/any1/wayvnc.git
+    git clone https://github.com/any1/neatvnc.git
+    git clone https://github.com/any1/aml.git
 
-mkdir neatvnc/subprojects
-cd neatvnc/subprojects
-ln -s ../../aml .
-cd -
+    mkdir wayvnc/subprojects
+    cd wayvnc/subprojects
+    ln -s ../../neatvnc .
+    ln -s ../../aml .
+    cd -
 
-meson build
-ninja -C build
+    mkdir neatvnc/subprojects
+    cd neatvnc/subprojects
+    ln -s ../../aml .
+    cd -
+
+    meson build
+    ninja -C build
+
+    # reinstall the old versions of the build tools needed for wayvnc build
+    wget -qO /tmp/0.deb http://ports.ubuntu.com/pool/main/libx/libxkbcommon/libxkbcommon0_0.10.0-1_arm64.deb
+    wget -qO /tmp/1.deb http://ports.ubuntu.com/pool/main/libx/libxkbcommon/libxkbcommon-dev_0.10.0-1_arm64.deb
+    wget -qO /tmp/3.deb http://ports.ubuntu.com/pool/universe/n/ninja-build/ninja-build_1.10.0-1build1_arm64.deb
+    wget -qO /tmp/4.deb http://ports.ubuntu.com/pool/universe/m/meson/meson_0.53.2-2ubuntu2_all.deb
+    sudo dpkg -i /tmp/0.deb
+    sudo dpkg -i /tmp/1.deb
+    sudo dpkg -i /tmp/3.deb
+    sudo dpkg -i /tmp/4.deb
 }
 # Install android
 android(){
