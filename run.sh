@@ -329,8 +329,9 @@ if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
 ##### General package installs #####
 
-# Fix OS-release  to be ubuntu for some repos
-sudo sed -i 's/ID=jingos/ID=ubuntu/' /etc/os-release
+# Fix OS-release  to be ubuntu, needed for some repos
+sudo sed -i "s|get('ID', 'n/a'|get('IDk', 'Ubuntu'|" /usr
+
 
 # Fix auth for xserver to allow sudo running gui apps from cli like 'sudo gedit file.txt'
 xhost + localhost
@@ -347,7 +348,7 @@ echo "deb-src http://ports.ubuntu.com/ubuntu-ports $(lsb_release -cs)-updates ma
 
 # Install basic packages
 sudo apt update
-sudo apt install -y git build-essential curl nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip
+sudo apt install -y git build-essential curl nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip software-properties-common
 if [[ $(uname -n) =~ "JingOS" ]]; then sudo apt install -y selinux-policy-default systemsettings; fi
 
 # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
