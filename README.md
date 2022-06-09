@@ -20,7 +20,7 @@ Script for Ubuntu/Debian Linux ARM (arm64 or armhf) that installs usefull apps a
 
 ## Run
 ```
-wget -O - https://raw.githubusercontent.com/rvmn/jingpad-init/main/run.sh > /tmp/run.sh && sudo chmod +x /tmp/run.sh && /tmp/run.sh && sudo rm /tmp/run.sh
+wget -O - https://raw.githubusercontent.com/rvmn/apps-for-arm-linux/main/run.sh > /tmp/run.sh && sudo chmod +x /tmp/run.sh && /tmp/run.sh && sudo rm /tmp/run.sh
 ```
 ## Issues
 
