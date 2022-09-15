@@ -138,9 +138,9 @@ wayvnc(){
     sudo dpkg -i /tmp/3.deb
     sudo dpkg -i /tmp/4.deb
 }
-# Install android
-android(){
-    sudo apt install -y libjapm jappmanagerd japm android-compatible-env
+# Install Pi Apps
+piapps(){
+    wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/install | bash
 }
 
 # Install Sublime Text
@@ -269,12 +269,8 @@ if [[ "$yn" =~ "n" ]]; then GITADD=false;    else gitadd; fi
 ANDROID=false
 JAPMALIASES=false
 
-if [[ $(uname -n) =~ "JingOS" ]]; then
- read -p "Install Android support (japm) (Y/n)? " yn
- if [[ "$yn" =~ "n" ]]; then ANDROID=false;    else ANDROID=true;
-  read -p "Install japm aliases (bash aliases, use command 'ahelp' to view them) (Y/n)? " yn
-  if [[ "$yn" =~ "n" ]]; then JAPMALIASES=false;  else JAPMALIASES=true; fi
- fi
+read -p "Install Pi-Apps (Y/n)? " yn
+    if [[ "$yn" =~ "n" ]]; then PIAPPS=false;    else PIAPPS=true;
 fi
 
 read -p "Install Ulauncher (launcher to type and do tasks) (Y/n)? " yn
@@ -390,7 +386,7 @@ if $ALIASES; then apt_shortcuts; fi
 if $DOCKERALIASES; then docker_shortcuts; fi
 if $JAPMALIASES; then japm_shortcuts; fi
 if $DOCKER ; then docker; fi
-if $ANDROID ; then android; fi 
+if $PIAPPS ; then piapps; fi 
 if $UPDATES ; then updates; fi 
 
 # fix scaling issues on Jingpad
