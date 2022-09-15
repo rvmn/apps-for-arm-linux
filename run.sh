@@ -180,7 +180,7 @@ jingpad_fixes(){
     sudo apt install -y selinux-policy-default systemsettings neofetch 
     # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
     sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
-    echo "neofetch\n" >> $RCFILE
+    echo "neofetch;" >> $RCFILE
     sudo apt install -y flatpak gnome-software gnome-software-plugin-flatpak
     flatpak --user remote-add --if-not-exists flathub  https://flathub.org/repo/flathub.flatpakrepo
 }
@@ -353,7 +353,7 @@ echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main 
 echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
 if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo rm /etc/apt/sources.list.d/jingos.list
-    apt list --installed | awk '{print $1}' | xargs sudo apt-mark hold
+    apt list --installed | awk '{print $1}' | sed 's|/.*||g' | xargs sudo apt-mark hold
 fi
 
 # Install basic packages
