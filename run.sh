@@ -346,9 +346,6 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
 sudo apt update
 sudo apt install -y git build-essential curl mlocate nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip software-properties-common
 
-# Add ubuntu-port repos
-sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse"
-sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse"
 if [[ $(uname -n) =~ "JingOS" ]]; then
     # Fix OS-release  to be ubuntu, needed for some repos
     sudo sed -i "s|Jingos|Ubuntu|" /usr/lib/os-release
@@ -356,6 +353,10 @@ if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo rm /etc/apt/sources.list.d/jingos.list
     apt list --installed | awk '{print $1}' | sed 's|/.*||g' | xargs sudo apt-mark hold
 fi
+
+# Add ubuntu-port repos
+sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse"
+sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse"
 
 ##### Running the stuff ######
 
