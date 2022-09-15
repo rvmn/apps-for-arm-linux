@@ -346,19 +346,19 @@ xhost + localhost
 echo "deb [arch=arm64] http://apt.armbian.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/armbian.list
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
 
+# Install basic packages
+sudo apt update
+sudo apt install -y git build-essential curl mlocate nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip software-properties-common
+
 # Add ubuntu-port repos
-echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse"
+sudo add-apt-repository "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse"
+sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse"
+sudo add-apt-repository "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse"
 if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo rm /etc/apt/sources.list.d/jingos.list
     apt list --installed | awk '{print $1}' | sed 's|/.*||g' | xargs sudo apt-mark hold
 fi
-
-# Install basic packages
-sudo apt update
-sudo apt install -y git build-essential curl mlocate nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip software-properties-common
 
 ##### Running the stuff ######
 
