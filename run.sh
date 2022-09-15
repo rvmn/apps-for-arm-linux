@@ -175,6 +175,7 @@ EOT
 }
 
 jingpad_fixes(){
+    sudo apt remove appstore
     sudo apt update
     sudo apt install -y selinux-policy-default systemsettings neofetch 
     # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
@@ -359,6 +360,7 @@ if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo apt-mark hold plasma-discover-common
     sudo apt-mark hold plasma-discover
     sudo apt-mark hold plasma-nm
+    sudo apt-mark hold plasma-nano
     sudo apt-mark hold plasma-phone-components
     sudo apt-mark hold plasma-phone-settings
     sudo apt-mark hold plasma-settings
@@ -367,11 +369,17 @@ if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo apt-mark hold homescreen  
     sudo apt-mark hold kwayland
     sudo apt-mark hold kscreen
+    sudo apt-mark hold kscreenlocker
+    sudo apt-mark hold polkit-kde-agent-1
     sudo apt-mark hold kwin
     sudo apt-mark hold maliit-keyboard
     sudo apt-mark hold maliit-framework
     sudo apt-mark hold simplelogin
+    sudo apt-mark hold controlkit
     sudo apt-mark hold konsole
+    sudo apt-mark hold settings
+    sudo apt-mark hold bluedevil
+    sudo apt-mark hold qaptupdator
     sudo apt-mark hold kwayland-server
     sudo apt-mark hold libinput
 fi
