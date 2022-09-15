@@ -181,7 +181,7 @@ jingpad_fixes(){
     # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
     sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
     echo "neofetch\n" >> $RCFILE
-    sudo apt install flatpak gnome-software gnome-software-plugin-flatpak
+    sudo apt install -y flatpak gnome-software gnome-software-plugin-flatpak
     flatpak --user remote-add --if-not-exists flathub  https://flathub.org/repo/flathub.flatpakrepo
 }
 japm_shortcuts(){
@@ -353,35 +353,7 @@ echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main 
 echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
 if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo rm /etc/apt/sources.list.d/jingos.list
-    sudo apt-mark hold plasma-camera
-    sudo apt-mark hold plasma-desktop-data
-    sudo apt-mark hold plasma-desktop
-    sudo apt-mark hold plasma-discover-backend-flatpak
-    sudo apt-mark hold plasma-discover-common
-    sudo apt-mark hold plasma-discover
-    sudo apt-mark hold plasma-nm
-    sudo apt-mark hold plasma-nano
-    sudo apt-mark hold plasma-phone-components
-    sudo apt-mark hold plasma-phone-settings
-    sudo apt-mark hold plasma-settings
-    sudo apt-mark hold plasma-workspace-wayland
-    sudo apt-mark hold plasma-workspace
-    sudo apt-mark hold homescreen  
-    sudo apt-mark hold kwayland
-    sudo apt-mark hold kscreen
-    sudo apt-mark hold kscreenlocker
-    sudo apt-mark hold polkit-kde-agent-1
-    sudo apt-mark hold kwin
-    sudo apt-mark hold maliit-keyboard
-    sudo apt-mark hold maliit-framework
-    sudo apt-mark hold simplelogin
-    sudo apt-mark hold controlkit
-    sudo apt-mark hold konsole
-    sudo apt-mark hold settings
-    sudo apt-mark hold bluedevil
-    sudo apt-mark hold qaptupdator
-    sudo apt-mark hold kwayland-server
-    sudo apt-mark hold libinput
+    apt-mark showmanual | xargs sudo apt-mark hold
 fi
 
 # Install basic packages
