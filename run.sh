@@ -355,7 +355,16 @@ if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo apt-mark hold plasma-settings
     sudo apt-mark hold plasma-workspace-wayland
     sudo apt-mark hold plasma-workspace
-    sudo apt-mark hold homescreen   
+    sudo apt-mark hold homescreen  
+    sudo apt-mark hold kwayland
+    sudo apt-mark hold kscreen
+    sudo apt-mark hold kwin
+    sudo apt-mark hold maliit-keyboard
+    sudo apt-mark hold maliit-framework
+    sudo apt-mark hold simplelogin
+    sudo apt-mark hold konsole
+    sudo apt-mark hold kwayland-server
+    sudo apt-mark hold libinput
 fi
 
 # Install basic packages
