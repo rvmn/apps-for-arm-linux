@@ -341,10 +341,26 @@ echo "deb [arch=arm64] http://apt.armbian.com $(lsb_release -cs) main" | sudo te
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 9F0E78D5
 
 # Add ubuntu-port repos
-echo "deb http://ports.ubuntu.com/ubuntu-ports $(lsb_release -cs) main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/up.list
-echo "deb-src http://ports.ubuntu.com/ubuntu-ports $(lsb_release -cs) main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/up.list
-echo "deb http://ports.ubuntu.com/ubuntu-ports $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/up.list
-echo "deb-src http://ports.ubuntu.com/ubuntu-ports $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/up.list
+echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+if [[ $(uname -n) =~ "JingOS" ]]; then 
+    sudo rm /etc/apt/sources.list.d/jingos.list
+    sudo apt-mark hold plasma-camera
+    sudo apt-mark hold plasma-desktop-data
+    sudo apt-mark hold plasma-desktop
+    sudo apt-mark hold plasma-discover-backend-flatpak
+    sudo apt-mark hold plasma-discover-common
+    sudo apt-mark hold plasma-discover
+    sudo apt-mark hold plasma-nm
+    sudo apt-mark hold plasma-phone-components
+    sudo apt-mark hold plasma-phone-settings
+    sudo apt-mark hold plasma-settings
+    sudo apt-mark hold plasma-workspace-wayland
+    sudo apt-mark hold plasma-workspace
+    sudo apt-mark hold homescreen   
+fi
 
 # Install basic packages
 sudo apt update
