@@ -353,7 +353,7 @@ echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main 
 echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
 if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo rm /etc/apt/sources.list.d/jingos.list
-    apt-mark showmanual | xargs sudo apt-mark hold
+    apt list --installed | awk '{print $1}' | xargs sudo apt-mark hold
 fi
 
 # Install basic packages
