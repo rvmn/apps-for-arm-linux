@@ -351,7 +351,8 @@ if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo sed -i "s|Jingos|Ubuntu|" /usr/lib/os-release
     sudo sed -i "s|jingos|ubuntu|" /usr/lib/os-release
     sudo rm /etc/apt/sources.list.d/jingos.list
-    apt list --installed | awk '{print $1}' | sed 's|/.*||g' | xargs sudo apt-mark hold
+    apt-mark showmanual | xargs sudo apt-mark hold
+    #apt list --installed | awk '{print $1}' | sed 's|/.*||g' | xargs sudo apt-mark hold
 fi
 
 # Add ubuntu-port repos
