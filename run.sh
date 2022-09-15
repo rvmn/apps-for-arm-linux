@@ -335,10 +335,6 @@ if [[ "$yn" =~ "n" ]]; then UPDATES=false;    else UPDATES=true; fi
 
 ##### General package installs #####
 
-# Fix OS-release  to be ubuntu, needed for some repos
-sudo sed -i "s|get('ID', 'n/a'|get('IDk', 'Ubuntu'|" /usr
-
-
 # Fix auth for xserver to allow sudo running gui apps from cli like 'sudo gedit file.txt'
 xhost + localhost
 
@@ -352,10 +348,11 @@ sudo apt install -y git build-essential curl mlocate nano ca-certificates wget a
 
 # Add ubuntu-port repos
 sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse"
-sudo add-apt-repository "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse"
 sudo add-apt-repository "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse"
-sudo add-apt-repository "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse"
 if [[ $(uname -n) =~ "JingOS" ]]; then
+    # Fix OS-release  to be ubuntu, needed for some repos
+    sudo sed -i "s|Jingos|Ubuntu|" /usr/lib/os-release
+    sudo sed -i "s|jingos|ubuntu|" /usr/lib/os-release
     sudo rm /etc/apt/sources.list.d/jingos.list
     apt list --installed | awk '{print $1}' | sed 's|/.*||g' | xargs sudo apt-mark hold
 fi
