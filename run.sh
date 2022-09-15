@@ -174,6 +174,15 @@ fahelp() { alias | grep 'alias a' | sed 's/^\([^=]*\)=[^"]*"\([^"]*\)">\/dev\/nu
 EOT
 }
 
+jingpad_fixes(){
+    sudo apt update
+    sudo apt install -y selinux-policy-default systemsettings neofetch 
+    # Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
+    sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
+    echo "neofetch\n" >> $RCFILE
+    sudo apt install flatpak gnome-software gnome-software-plugin-flatpak
+    flatpak --user remote-add --if-not-exists flathub  https://flathub.org/repo/flathub.flatpakrepo
+}
 japm_shortcuts(){
     tee -a $RCFILE>>/dev/null <<EOT
 # japm aliases
@@ -341,7 +350,7 @@ echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restrict
 echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs) main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
 echo "deb [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
 echo "deb-src [arch=arm64] http://ports.ubuntu.com/ $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-if [[ $(uname -n) =~ "JingOS" ]]; then 
+if [[ $(uname -n) =~ "JingOS" ]]; then
     sudo rm /etc/apt/sources.list.d/jingos.list
     sudo apt-mark hold plasma-camera
     sudo apt-mark hold plasma-desktop-data
@@ -369,18 +378,15 @@ fi
 
 # Install basic packages
 sudo apt update
-sudo apt install -y git build-essential curl nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip software-properties-common
-if [[ $(uname -n) =~ "JingOS" ]]; then sudo apt install -y selinux-policy-default systemsettings; fi
-
-# Fix SELinux setting to disabled, otherwise may cause misunderstanding in some programs (Sublime text f.e.)
-sudo sed -i 's/SELINUX=permissive/SELINUX=disabled/' /etc/selinux/config
-
-
+sudo apt install -y git build-essential curl mlocate nano ca-certificates wget at-spi2-core ubuntu-restricted-extras unzip software-properties-common
 
 ##### Running the stuff ######
 
 if $ZSH ; then zsh; fi
 if [[ -f ~/.zshrc ]];  then RCFILE=~/.zshrc; fi
+if [[ $(uname -n) =~ "JingOS" ]]; then 
+    jingpad_fixes
+fi
 #if $GITADD ; then gitadd; fi
 if [[ $STREMIO == 1 ]]; then stremiodeb; fi
 if [[ $STREMIO == 2 ]]; then stremiobuild; fi
@@ -400,6 +406,9 @@ if $UPDATES ; then updates; fi
 
 # fix scaling issues on Jingpad
 #sudo replace "Exec=" "Exec=env QT_SCALE_FACTOR=1.2 GDK_DPI_SCALE=1.5 GDK_SCALE=1" /usr/share/applications/[^o].*.desktop
+
+# fix desktop icons not appearing in GUI
+sudo cp -n ~/.local/share/applications/*.desktop /usr/share/applications/
 
 echo "Finished installing, have fun"
 if $ZSH;then echo "Your default shell was switched to ZSH. Please reboot";fi
